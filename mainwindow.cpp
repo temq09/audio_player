@@ -15,6 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //settings form
     main_form->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     main_form->sb_volume->setValue(currentVolume);
+    foreach (const QAudioDeviceInfo &device, QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
+        main_form->cb_device->addItem(device.deviceName(), qVariantFromValue(device));
+    }
 
     //connect block
     connect(main_form->btn_OpenFile, SIGNAL(clicked()), this, SLOT(OpenFile()));

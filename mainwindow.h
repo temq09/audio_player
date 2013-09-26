@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QStringListModel>
+#include <QAudioDeviceInfo>
 #include "audioplayer_core.h"
 
 namespace Ui {
