@@ -16,7 +16,6 @@ AudioPlayer_core::~AudioPlayer_core()
 void AudioPlayer_core::PlayTrack2(QString path)
 {
     player->setMedia(QUrl::fromLocalFile(path));
-
     player->play();
     int duration = player->duration();
     qDebug() << duration;
@@ -38,4 +37,3 @@ void AudioPlayer_core::VolumeChange(int volume)
 {
     player->setVolume(volume);
 }
-

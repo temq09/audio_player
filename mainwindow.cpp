@@ -9,8 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //setting variables
     currentVolume = 50;
+    //deviceInfo = QAudioDeviceInfo::defaultOutputDevice();
 
     player = new AudioPlayer_core(this, currentVolume);
+    //settings = new QAudioFormat();
 
     //settings form
     main_form->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -72,7 +74,6 @@ void MainWindow::GetSelectedIndex(QModelIndex index)
 
 void MainWindow::StartPlay(QString path)
 {
-    //player->PlayTrack(path);
     player->PlayTrack2(path);
 }
 
@@ -134,8 +135,5 @@ void MainWindow::DurationTrack(int duration)
 
 void MainWindow::DeviceChanged(int index)
 {
-    deviceInfo = main_form->cb_device->itemData(index).value<QAudioDeviceInfo>();
-    outputDevice = new QAudioOutput(deviceInfo,settings, this);
-   // outputDevice->start(player);
     qDebug() << "Changed device";
 }
