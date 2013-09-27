@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->btn_Previous, SIGNAL(clicked()), this, SLOT(Previous()));
     connect(player,SIGNAL(DurationCurrentTrack(int)), this, SLOT(DurationTrack(int)));
     connect(main_form->sb_volume, SIGNAL(valueChanged(int)), player, SLOT(VolumeChange(int)));
+    connect(main_form->cb_device, SIGNAL(activated(int)), this, SLOT(DeviceChanged(int)));
 }
 
 MainWindow::~MainWindow()
@@ -129,4 +130,12 @@ void MainWindow::Previous()
 void MainWindow::DurationTrack(int duration)
 {
     qDebug() <<"Продолжительность песни" << duration;
+}
+
+void MainWindow::DeviceChanged(int index)
+{
+    deviceInfo = main_form->cb_device->itemData(index).value<QAudioDeviceInfo>();
+    outputDevice = new QAudioOutput(deviceInfo,settings, this);
+   // outputDevice->start(player);
+    qDebug() << "Changed device";
 }

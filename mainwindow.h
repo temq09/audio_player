@@ -31,6 +31,10 @@ private:
     QStringListModel model;
     AudioPlayer_core* player;
     int currentVolume;
+    QAudioDeviceInfo deviceInfo;
+    QAudioFormat settings;
+    QAudioOutput *outputDevice;
+
 
     void refreshList();
     void StartPlay(QString path);
@@ -44,6 +48,7 @@ private slots:
     void Next();
     void Previous();
     void DurationTrack(int duration);
+    void DeviceChanged(int index);
 };
 
 #endif // MAINWINDOW_H
