@@ -118,9 +118,16 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="btn_SavePlayList">
           <property name="text">
-           <string>PushButton</string>
+           <string>Сохранить текущий плэйлист  </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_OpenPlayList">
+          <property name="text">
+           <string>Открыть плэйлист</string>
           </property>
          </widget>
         </item>
