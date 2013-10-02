@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     currentVolume = 50;
     //deviceInfo = QAudioDeviceInfo::defaultOutputDevice();
     player = new AudioPlayer_core(this, currentVolume);
+    core = new AudioCore(this, currentVolume);
     //settings = new QAudioFormat();
 
     //settings form
@@ -32,9 +33,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(player,SIGNAL(DurationCurrentTrack(int)), this, SLOT(DurationTrack(int)));
     //connect(main_form->sb_volume, SIGNAL(valueChanged(int)), player, SLOT(VolumeChange(int)));
     connect(main_form->cb_device, SIGNAL(activated(int)), this, SLOT(DeviceChanged(int)));
+    connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(VolumeChange(int)));
 
-    core = new AudioCore(this, currentVolume);
-    //connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(VolumeChange(int)));
+
 }
 
 MainWindow::~MainWindow()

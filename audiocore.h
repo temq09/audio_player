@@ -25,7 +25,7 @@ private:
     HSAMPLE sample;
     HCHANNEL ch;
     void HandleError(int errorCode);
-    int volume;
+    float volume;
 
 
 public slots:

@@ -2,7 +2,7 @@
 
 AudioCore::AudioCore(QObject *parent, int volume) :
     QObject(parent),
-    volume(volume)
+    volume((float)volume)
 {
     //initialization variables
     stateAudioSystem = false;
@@ -66,7 +66,7 @@ void AudioCore::PlayTrack(QString path)
     else
     {
         qDebug() <<"Ok";
-        //VolumeChange(volume);
+        VolumeChange(volume);
     }
     if (!BASS_ChannelPlay(stream, trackRestart))
     {
@@ -106,7 +106,7 @@ void AudioCore::PauseTrack()
 
 void AudioCore::VolumeChange(int value)
 {
-    if (!BASS_ChannelSetAttribute(stream,BASS_ATTRIB_VOL,value/100))
+    if (!BASS_ChannelSetAttribute(stream,BASS_ATTRIB_VOL,(float)value/100))
     {
         qDebug() << "Возникла ошибка при изменении громкости";
         HandleError(BASS_ErrorGetCode());
