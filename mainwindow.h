@@ -12,6 +12,8 @@
 #include <QStringListModel>
 #include <QAudioDeviceInfo>
 #include "audioplayer_core.h"
+#include <QAudioOutputSelectorControl>
+#include <audiocore.h>
 
 namespace Ui {
 class MainWindow;
@@ -34,7 +36,7 @@ private:
     QAudioDeviceInfo deviceInfo;
     QAudioFormat settings;
     QAudioOutput *outputDevice;
-
+    AudioCore *core;
 
     void refreshList();
     void StartPlay(QString path);

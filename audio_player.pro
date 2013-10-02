@@ -21,3 +21,6 @@ HEADERS  += mainwindow.h \
     audiocore.h
 
 FORMS    += mainwindow.ui
+
+LIBS += -L"C:\tmp"
+LIBS += -lbass

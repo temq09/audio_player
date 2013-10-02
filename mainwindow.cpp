@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //setting variables
     currentVolume = 50;
     //deviceInfo = QAudioDeviceInfo::defaultOutputDevice();
-
     player = new AudioPlayer_core(this, currentVolume);
     //settings = new QAudioFormat();
 
@@ -21,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
         main_form->cb_device->addItem(device.deviceName(), qVariantFromValue(device));
     }
 
+
     //connect block
     connect(main_form->btn_OpenFile, SIGNAL(clicked()), this, SLOT(OpenFile()));
     connect(main_form->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(GetSelectedIndex(QModelIndex)));
@@ -30,14 +30,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->btn_Next, SIGNAL(clicked()), this, SLOT(Next()));
     connect(main_form->btn_Previous, SIGNAL(clicked()), this, SLOT(Previous()));
     connect(player,SIGNAL(DurationCurrentTrack(int)), this, SLOT(DurationTrack(int)));
-    connect(main_form->sb_volume, SIGNAL(valueChanged(int)), player, SLOT(VolumeChange(int)));
+    //connect(main_form->sb_volume, SIGNAL(valueChanged(int)), player, SLOT(VolumeChange(int)));
     connect(main_form->cb_device, SIGNAL(activated(int)), this, SLOT(DeviceChanged(int)));
+
+    core = new AudioCore(this, currentVolume);
+    //connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(VolumeChange(int)));
 }
 
 MainWindow::~MainWindow()
 {
     delete main_form;
     delete player;
+    delete core;
 }
 
 void MainWindow::OpenFile()
@@ -74,7 +78,8 @@ void MainWindow::GetSelectedIndex(QModelIndex index)
 
 void MainWindow::StartPlay(QString path)
 {
-    player->PlayTrack2(path);
+    //player->PlayTrack2(path);
+    core->PlayTrack(path);
 }
 
 void MainWindow::Play()
@@ -90,12 +95,14 @@ void MainWindow::Play()
 
 void MainWindow::Pause()
 {
-    player->PauseTrack();
+    //player->PauseTrack();
+    core->PauseTrack();
 }
 
 void MainWindow::Stop()
 {
-    player->StopTrack();
+    //player->StopTrack();
+    core->StopTrack();
 }
 
 void MainWindow::Next()
