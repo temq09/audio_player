@@ -28,11 +28,18 @@ AudioCore::~AudioCore()
 {
     BASS_ChannelStop(stream);
     BASS_StreamFree(stream);
+    BASS_Free();
 }
 
 void AudioCore::HandleError(int errorCode)
 {
     qDebug() << "Код ошибки: "<< errorCode;
+}
+
+static void* SyncProc(HSYNC handle, DWORD channel, DWORD data, void *user)
+{
+    qDebug() << "Конец трека";
+    //emit SwitchTrack();
 }
 
 void AudioCore::PlayTrack(QString path)
@@ -73,9 +80,10 @@ void AudioCore::PlayTrack(QString path)
         qDebug() << "Ошибка воспроизведения. Файл audiocore.cpp. Метод PlayTrack";
     }
     else
+    {
         qDebug() << "Начинаем воспроизводить трек";
-
-
+       // BASS_ChannelSetSync(stream, BASS_SYNC_ONETIME, BASS_SYNC_END, SyncProc, 0);
+    }
 }
 
 void AudioCore::StopTrack()
@@ -109,6 +117,25 @@ void AudioCore::VolumeChange(int value)
     if (!BASS_ChannelSetAttribute(stream,BASS_ATTRIB_VOL,(float)value/100))
     {
         qDebug() << "Возникла ошибка при изменении громкости";
+        HandleError(BASS_ErrorGetCode());
+    }
+}
+void AudioCore::ChangeDevice(int index)
+{
+    qDebug() << "Инициализируем новое устройство";
+    if(!BASS_Init(index+1, 44100,0,0, NULL))
+    {
+        if(BASS_ErrorGetCode()!= 14)
+        {
+            qDebug() << "Ошибка инициализации устройства";
+            HandleError(BASS_ErrorGetCode());
+        }
+    }
+
+    qDebug() << "Изменяем устройство вывода трека";
+    if (!BASS_ChannelSetDevice(stream,index+1))
+    {
+        qDebug() << "Изменение устройста неудачно";
         HandleError(BASS_ErrorGetCode());
     }
 }

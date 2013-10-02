@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(main_form->sb_volume, SIGNAL(valueChanged(int)), player, SLOT(VolumeChange(int)));
     connect(main_form->cb_device, SIGNAL(activated(int)), this, SLOT(DeviceChanged(int)));
     connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(VolumeChange(int)));
-
-
+    connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
+    connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(ChangeDevice(int)));
 }
 
 MainWindow::~MainWindow()
@@ -144,4 +144,5 @@ void MainWindow::DurationTrack(int duration)
 void MainWindow::DeviceChanged(int index)
 {
     qDebug() << "Changed device";
+
 }

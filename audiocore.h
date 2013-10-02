@@ -26,10 +26,15 @@ private:
     HCHANNEL ch;
     void HandleError(int errorCode);
     float volume;
+    //void SyncProc(HSYNC handle, DWORD channel, DWORD data, void *user);
 
 
 public slots:
     void VolumeChange(int value);
+    void ChangeDevice(int index);
+
+signals:
+    void SwitchTrack();
 };
 
 #endif // AUDIOCORE_H
