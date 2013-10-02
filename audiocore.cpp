@@ -49,6 +49,12 @@ void AudioCore::PlayTrack(QString path)
         return;
     }
 
+    if(BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING)
+    {
+        BASS_ChannelStop(stream);
+        BASS_StreamFree(stream);
+    }
+
     qDebug() << "Создаем stream";
     stream = BASS_StreamCreateFile(FALSE,path.toStdString().c_str() , 0,0,0);
     if(!stream)
