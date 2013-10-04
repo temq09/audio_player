@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //deviceInfo = QAudioDeviceInfo::defaultOutputDevice();
     player = new AudioPlayer_core(this, currentVolume);
     core = new AudioCore(this, currentVolume);
+
     //settings = new QAudioFormat();
 
     //settings form
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(VolumeChange(int)));
     connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
     connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(ChangeDevice(int)));
+    connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(OpenPlayList()));
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +60,16 @@ void MainWindow::OpenFile()
         play_list.append((*constIterator).toLocal8Bit().constData());
     }
     refreshList();
+}
+
+void MainWindow::OpenPlayList()
+{
+    QString playList = QFileDialog::getOpenFileName(this,
+                                                        "Открыть плейлист",
+                                                        "C:/",
+                                                        "playlist (*.m3u)");
+    ParsePlayList* parsePlaylist = new ParsePlayList;
+    parsePlaylist->StartParse(playList);
 }
 
 void MainWindow::refreshList()
@@ -146,3 +158,5 @@ void MainWindow::DeviceChanged(int index)
     qDebug() << "Changed device";
 
 }
+
+

@@ -14,6 +14,7 @@
 #include "audioplayer_core.h"
 #include <QAudioOutputSelectorControl>
 #include <audiocore.h>
+#include "parseplaylist.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +52,7 @@ private slots:
     void Previous();
     void DurationTrack(int duration);
     void DeviceChanged(int index);
+    void OpenPlayList();
 };
 
 #endif // MAINWINDOW_H

@@ -14,11 +14,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     audioplayer_core.cpp \
-    audiocore.cpp
+    audiocore.cpp \
+    parseplaylist.cpp
 
 HEADERS  += mainwindow.h \
     audioplayer_core.h \
-    audiocore.h
+    audiocore.h \
+    parseplaylist.h
 
 FORMS    += mainwindow.ui
 
