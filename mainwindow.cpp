@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
         main_form->cb_device->addItem(device.deviceName(), qVariantFromValue(device));
     }
 
-
     //connect block
     connect(main_form->btn_OpenFile, SIGNAL(clicked()), this, SLOT(OpenFile()));
     connect(main_form->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(GetSelectedIndex(QModelIndex)));
@@ -31,8 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->btn_Stop, SIGNAL(clicked()), this, SLOT(Stop()));
     connect(main_form->btn_Next, SIGNAL(clicked()), this, SLOT(Next()));
     connect(main_form->btn_Previous, SIGNAL(clicked()), this, SLOT(Previous()));
-    connect(player,SIGNAL(DurationCurrentTrack(int)), this, SLOT(DurationTrack(int)));
-    //connect(main_form->sb_volume, SIGNAL(valueChanged(int)), player, SLOT(VolumeChange(int)));
     connect(main_form->cb_device, SIGNAL(activated(int)), this, SLOT(DeviceChanged(int)));
     connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(VolumeChange(int)));
     connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
@@ -54,12 +51,22 @@ void MainWindow::OpenFile()
                                                           "C:/",
                                                           "Audio (*.mp3 *.raw *.waw);;All files (*.*)");
 
+    parseFileList(file_list);
     QStringList::const_iterator constIterator;
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
         play_list.append((*constIterator).toLocal8Bit().constData());
     }
     refreshList();
+}
+
+void MainWindow::parseFileList(QStringList &file_list)
+{
+    QStringList::const_iterator constIterator;
+    for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
+    {
+
+    }
 }
 
 void MainWindow::OpenPlayList()
@@ -69,12 +76,21 @@ void MainWindow::OpenPlayList()
                                                         "C:/",
                                                         "playlist (*.m3u)");
     ParsePlayList* parsePlaylist = new ParsePlayList;
-    parsePlaylist->StartParse(playList);
+
+    if(parsePlaylist->StartParse(playList))
+    {
+        trackName = parsePlaylist->GetTrackName();
+        trackPath = parsePlaylist->GetTrackPath();
+        trackTime = parsePlaylist->GetTrackTime();
+        refreshList();
+    }
+
+    delete parsePlaylist;
 }
 
 void MainWindow::refreshList()
 {
-    model.setStringList(play_list);
+    model.setStringList(trackName);
     main_form->listView->setModel(&model);
 
     qDebug() << "Refresh play list";
@@ -84,7 +100,7 @@ void MainWindow::GetSelectedIndex(QModelIndex index)
 {
     qDebug() << index.row();
     //emit StartPlay(index);
-    QString path = play_list.at(index.row());
+    QString path = trackPath.value(trackName.at(index.row()));
     qDebug() << path;
     StartPlay(path);
 }
@@ -101,7 +117,7 @@ void MainWindow::Play()
     index = main_form->listView->currentIndex().row();
     if(index != -1)
     {
-        QString path = play_list.at(index);
+        QString path = trackPath.value(trackName.at(index));
         StartPlay(path);
     }
 }
@@ -124,7 +140,7 @@ void MainWindow::Next()
     index = main_form->listView->currentIndex().row() + 1;
     if (index != -1)
     {
-        QString path = play_list.at(index);
+        QString path = trackPath.value(trackName.at(index));
         StartPlay(path);
     }
 }
@@ -143,7 +159,7 @@ void MainWindow::Previous()
         {
             index = 0;
         }
-        QString path = play_list.at(index);
+        QString path = trackPath.value(trackName.at(index));
         StartPlay(path);
     }
 }
@@ -158,5 +174,3 @@ void MainWindow::DeviceChanged(int index)
     qDebug() << "Changed device";
 
 }
-
-

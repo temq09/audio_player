@@ -15,6 +15,8 @@
 #include <QAudioOutputSelectorControl>
 #include <audiocore.h>
 #include "parseplaylist.h"
+#include <QList>
+#include <QMultiMap>
 
 namespace Ui {
 class MainWindow;
@@ -38,9 +40,13 @@ private:
     QAudioFormat settings;
     QAudioOutput *outputDevice;
     AudioCore *core;
+    QList<QString> trackName;
+    QMultiMap<QString, QString> trackPath;
+    QMultiMap<QString, int> trackTime;
 
     void refreshList();
     void StartPlay(QString path);
+    void parseFileList(QStringList &file_list);
 
 private slots:
     void OpenFile();
@@ -53,6 +59,7 @@ private slots:
     void DurationTrack(int duration);
     void DeviceChanged(int index);
     void OpenPlayList();
+
 };
 
 #endif // MAINWINDOW_H

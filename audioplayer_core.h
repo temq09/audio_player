@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QMediaPlayer>
 
-
 class AudioPlayer_core : public QObject
 {
     Q_OBJECT

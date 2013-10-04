@@ -15,7 +15,10 @@ public:
     ParsePlayList();
     ~ParsePlayList();
 
-    void StartParse(QString pathToPlayList);
+    bool StartParse(QString pathToPlayList);
+    QList<QString> GetTrackName();
+    QMultiMap<QString, QString> GetTrackPath();
+    QMultiMap<QString, int> GetTrackTime();
 
 private:
     QList<QString> listTrackName;

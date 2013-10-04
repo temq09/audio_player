@@ -11,13 +11,14 @@ ParsePlayList::~ParsePlayList()
 
 }
 
-void ParsePlayList::StartParse(QString pathToPlayList)
+bool ParsePlayList::StartParse(QString pathToPlayList)
 {
     QFile* file = new QFile(pathToPlayList);
     if(!file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
        // QMessageBox::critical(this, "Error", "File not open", QMessageBox::Ok);
-        return;
+        qDebug() << "Файл не открылся";
+        return false;
     }
     QString str;
     QByteArray arr;
@@ -39,7 +40,7 @@ void ParsePlayList::StartParse(QString pathToPlayList)
         qDebug() << "Неизвестный формат";
         file->close();
         delete file;
-        return;
+        return false;
     }
     else
     {
@@ -76,6 +77,7 @@ void ParsePlayList::StartParse(QString pathToPlayList)
 
     file->close();
     delete file;
+    return true;
 }
 
 void ParsePlayList::readTime(int *index, QByteArray &arr)
@@ -123,7 +125,6 @@ void ParsePlayList::readPath(int *index, QByteArray &arr, QString trackName)
         (*index)++;
     }
     listTrackPath.insert(trackName, path);
-    (*index)++;
 }
 
 void ParsePlayList::checkInfo(QString str, int *index, QByteArray &arr)
@@ -140,5 +141,20 @@ void ParsePlayList::checkInfo(QString str, int *index, QByteArray &arr)
         qDebug() << "Error. Not EXTINF ";
         return;
     }
+}
+
+QList<QString> ParsePlayList::GetTrackName()
+{
+    return listTrackName;
+}
+
+QMultiMap<QString, QString> ParsePlayList::GetTrackPath()
+{
+    return listTrackPath;
+}
+
+QMultiMap<QString, int> ParsePlayList::GetTrackTime()
+{
+    return listTrackTime;
 }
 
