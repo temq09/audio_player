@@ -24,5 +24,9 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
+#LIBS += -L../lib
+#LIBS += $$PWD/../Source/lib/bass.lib
+#LIBS += -lbass
+
 LIBS += -L"C:\tmp"
 LIBS += -lbass

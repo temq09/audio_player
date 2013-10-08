@@ -24,6 +24,14 @@ AudioCore::AudioCore(QObject *parent, int volume) :
 
 }
 
+void AudioCore::InitializeEqlizer()
+{
+    for(int i = 0; i<channel; i++)
+    {
+        fx[i] = BASS_ChannelSetFX(stream,BASS_FX_DX8_PARAMEQ, 1 );
+    }
+}
+
 AudioCore::~AudioCore()
 {
     BASS_ChannelStop(stream);
@@ -74,6 +82,7 @@ void AudioCore::PlayTrack(QString path)
     {
         qDebug() <<"Ok";
         VolumeChange(volume);
+        InitializeEqlizer();
     }
     if (!BASS_ChannelPlay(stream, trackRestart))
     {
@@ -138,4 +147,13 @@ void AudioCore::ChangeDevice(int index)
         qDebug() << "Изменение устройста неудачно";
         HandleError(BASS_ErrorGetCode());
     }
+}
+
+void AudioCore::ChangeParametrEqalizer(int value)
+{
+    parametr.fBandwidth = 1;
+    parametr.fGain = 0;
+    parametr.fCenter = value;
+    BASS_FXSetParameters(fx[0], &parametr);
+
 }

@@ -26,12 +26,18 @@ private:
     HCHANNEL ch;
     void HandleError(int errorCode);
     float volume;
+    int fx[];
+    int channel;
+    BASS_DX8_PARAMEQ parametr;
+
+    void InitializeEqlizer();
     //void SyncProc(HSYNC handle, DWORD channel, DWORD data, void *user);
 
 
 public slots:
     void VolumeChange(int value);
     void ChangeDevice(int index);
+    void ChangeParametrEqalizer(int value);
 
 signals:
     void SwitchTrack();

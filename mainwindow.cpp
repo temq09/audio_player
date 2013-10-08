@@ -35,6 +35,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
     connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(ChangeDevice(int)));
     connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(OpenPlayList()));
+    connect(main_form->pushButton, SIGNAL(clicked()), this, SLOT(changeEq()));
+    connect(main_form->slider_33, SIGNAL(valueChanged(int)), core, SLOT(ChangeParametrEqalizer(int)));
+}
+
+void MainWindow::initializeEqalizerScrollBar()
+{
+    //connect(main_form->slider_33, SIGNAL())
+
 }
 
 MainWindow::~MainWindow()
@@ -65,7 +73,17 @@ void MainWindow::parseFileList(QStringList &file_list)
     QStringList::const_iterator constIterator;
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
-
+        QFile* file = new QFile((*constIterator).toLocal8Bit().constData());
+        if (file->open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QByteArray arr = file->readAll();
+            if (arr != NULL)
+            {
+                qDebug() << arr;
+            }
+            else
+                qDebug() << "Файл не прочитан.";
+        }
     }
 }
 
@@ -171,6 +189,12 @@ void MainWindow::DurationTrack(int duration)
 
 void MainWindow::DeviceChanged(int index)
 {
-    qDebug() << "Changed device";
+    qDebug() << "Changed device" << index;
 
+}
+
+void MainWindow::changeEq()
+{
+    main_form->slider_33->setValue(15);
+    qDebug() <<"value chage on 15";
 }

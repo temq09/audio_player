@@ -43,10 +43,13 @@ private:
     QList<QString> trackName;
     QMultiMap<QString, QString> trackPath;
     QMultiMap<QString, int> trackTime;
+    int fx[];
+
 
     void refreshList();
     void StartPlay(QString path);
     void parseFileList(QStringList &file_list);
+    void initializeEqalizerScrollBar();
 
 private slots:
     void OpenFile();
@@ -59,6 +62,7 @@ private slots:
     void DurationTrack(int duration);
     void DeviceChanged(int index);
     void OpenPlayList();
+    void changeEq();
 
 };
 
