@@ -3,6 +3,7 @@
 
 #include <QAudioOutput>
 #include <QAudio>
+#include <QList>
 #include <lib/bass.h>
 #include <QDebug>
 
@@ -27,7 +28,8 @@ private:
     void HandleError(int errorCode);
     float volume;
     int fx[];
-    int channel;
+    static const int channel_count = 19;
+    QList<float> freq;
     BASS_DX8_PARAMEQ parametr;
 
     void InitializeEqlizer();

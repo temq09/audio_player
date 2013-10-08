@@ -17,6 +17,7 @@
 #include "parseplaylist.h"
 #include <QList>
 #include <QMultiMap>
+#include <QItemSelectionModel>
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,7 @@ private:
     Ui::MainWindow* main_form;
     QStringList play_list;
     QStringListModel model;
+    QItemSelectionModel* selectmodel;
     AudioPlayer_core* player;
     int currentVolume;
     QAudioDeviceInfo deviceInfo;
@@ -43,13 +45,16 @@ private:
     QList<QString> trackName;
     QMultiMap<QString, QString> trackPath;
     QMultiMap<QString, int> trackTime;
+    int currentPlayTrack;
     int fx[];
+    int channel_count;
 
 
     void refreshList();
     void StartPlay(QString path);
     void parseFileList(QStringList &file_list);
     void initializeEqalizerScrollBar();
+    void changeFocusToNextTrack(int row);
 
 private slots:
     void OpenFile();

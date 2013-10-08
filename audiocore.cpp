@@ -6,7 +6,8 @@ AudioCore::AudioCore(QObject *parent, int volume) :
 {
     //initialization variables
     stateAudioSystem = false;
-    trackRestart = false;
+    //trackRestart = false;
+    freq << 31.0f << 63.0f << 87.0f << 125.0f << 175.0f << 250.0f << 350.0f << 500.0f << 700.0f << 1000.0f << 1400.0f << 2000.0f << 2800.0f << 4000.0f << 5600.0f << 8000.0f << 11200.0f << 16000.0f;
 
     //initialization audioSystem
     stateAudioSystem = BASS_Init(-1,44100, 0,0, NULL);
@@ -26,9 +27,20 @@ AudioCore::AudioCore(QObject *parent, int volume) :
 
 void AudioCore::InitializeEqlizer()
 {
-    for(int i = 0; i<channel; i++)
+    for (int i = 0; i < channel_count-1; i++)
     {
-        fx[i] = BASS_ChannelSetFX(stream,BASS_FX_DX8_PARAMEQ, 1 );
+        fx[i] = BASS_ChannelSetFX(stream,BASS_FX_DX8_PARAMEQ, 0);
+        qDebug() << i << " ";
+    }
+    fx[channel_count-1] = BASS_ChannelSetFX(stream, BASS_FX_DX8_REVERB, 0);
+
+    parametr.fBandwidth = 1.0f;
+    parametr.fGain = 0.0f;
+    for (int i = 0; i < channel_count - 1; i++)
+    {
+        parametr.fCenter = freq.at(i);
+        fx[i] = BASS_FXSetParameters(stream, &parametr);
+        qDebug() << " Initializ parametr";
     }
 }
 
@@ -71,7 +83,7 @@ void AudioCore::PlayTrack(QString path)
     }
 
     qDebug() << "Создаем stream";
-    stream = BASS_StreamCreateFile(FALSE,path.toStdString().c_str() , 0,0,0);
+    stream = BASS_StreamCreateFile(FALSE,path.toStdString().c_str() , 0,0, BASS_SAMPLE_FX);
     if(!stream)
     {
         qDebug() << "Ошибка создания потока";
@@ -151,9 +163,5 @@ void AudioCore::ChangeDevice(int index)
 
 void AudioCore::ChangeParametrEqalizer(int value)
 {
-    parametr.fBandwidth = 1;
-    parametr.fGain = 0;
-    parametr.fCenter = value;
-    BASS_FXSetParameters(fx[0], &parametr);
 
 }

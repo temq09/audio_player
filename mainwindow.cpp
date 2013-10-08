@@ -9,11 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //setting variables
     currentVolume = 50;
-    //deviceInfo = QAudioDeviceInfo::defaultOutputDevice();
+    currentPlayTrack = 0;
     player = new AudioPlayer_core(this, currentVolume);
     core = new AudioCore(this, currentVolume);
-
-    //settings = new QAudioFormat();
 
     //settings form
     main_form->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -21,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach (const QAudioDeviceInfo &device, QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
         main_form->cb_device->addItem(device.deviceName(), qVariantFromValue(device));
     }
+    main_form->listView->setDragDropMode(QAbstractItemView::DragDrop);
 
     //connect block
     connect(main_form->btn_OpenFile, SIGNAL(clicked()), this, SLOT(OpenFile()));
@@ -36,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(ChangeDevice(int)));
     connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(OpenPlayList()));
     connect(main_form->pushButton, SIGNAL(clicked()), this, SLOT(changeEq()));
-    connect(main_form->slider_33, SIGNAL(valueChanged(int)), core, SLOT(ChangeParametrEqalizer(int)));
+    //connect(main_form->slider_87, SIGNAL(valueChanged(int)), core, SLOT(ChangeParametrEqalizer(int)));
 }
 
 void MainWindow::initializeEqalizerScrollBar()
@@ -136,6 +135,7 @@ void MainWindow::Play()
     if(index != -1)
     {
         QString path = trackPath.value(trackName.at(index));
+        currentPlayTrack = index;
         StartPlay(path);
     }
 }
@@ -155,10 +155,16 @@ void MainWindow::Stop()
 void MainWindow::Next()
 {
     int index = -1;
-    index = main_form->listView->currentIndex().row() + 1;
+    index = currentPlayTrack+1;
     if (index != -1)
     {
+        if(index > trackName.size()-1)
+        {
+            index = 0;
+        }
         QString path = trackPath.value(trackName.at(index));
+        changeFocusToNextTrack(index);
+        currentPlayTrack = index;
         StartPlay(path);
     }
 }
@@ -166,7 +172,7 @@ void MainWindow::Next()
 void MainWindow::Previous()
 {
     int index = -2;
-    index = main_form->listView->currentIndex().row()-1;
+    index = currentPlayTrack-1;
     if (index == -2)
     {
         return;
@@ -178,8 +184,15 @@ void MainWindow::Previous()
             index = 0;
         }
         QString path = trackPath.value(trackName.at(index));
+        changeFocusToNextTrack(index);
+        currentPlayTrack = index;
         StartPlay(path);
     }
+}
+
+void MainWindow::changeFocusToNextTrack(int row)
+{
+    main_form->listView->selectionModel()->select(model.index(row, 0), QItemSelectionModel::ClearAndSelect);
 }
 
 void MainWindow::DurationTrack(int duration)
