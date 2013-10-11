@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     currentPlayTrack = 0;
     player = new AudioPlayer_core(this, currentVolume);
     core = new AudioCore(this, currentVolume);
-    //tag = new TagLib::ID3v2::Tag;
 
     //settings form
     main_form->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -63,11 +62,6 @@ void MainWindow::OpenFile()
                                                           "Audio (*.mp3 *.raw *.waw);;All files (*.*)");
 
     parseFileList(file_list);
-    /*QStringList::const_iterator constIterator;
-    for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
-    {
-        play_list.append((*constIterator).toLocal8Bit().constData());
-    }*/
     refreshList();
 }
 
@@ -77,12 +71,6 @@ void MainWindow::parseFileList(QStringList &file_list)
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
         TagLib::MPEG::File mp3file((*constIterator).toLocal8Bit().constData());
-        /*TagLib::ID3v2::Tag* mp3tag = mp3file.ID3v2Tag();
-        if (mp3tag)
-        {
-           TagLib::String artist = mp3tag->artist();
-           qDebug() << artist.to8Bit().data();
-        }*/
         if (mp3file.hasID3v2Tag())
         {
             TagLib::ID3v2::Tag* mp3tag = mp3file.ID3v2Tag();
