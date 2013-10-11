@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+using namespace std;
+using namespace TagLib;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     main_form(new Ui::MainWindow)
@@ -12,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     currentPlayTrack = 0;
     player = new AudioPlayer_core(this, currentVolume);
     core = new AudioCore(this, currentVolume);
+    //tag = new TagLib::ID3v2::Tag;
 
     //settings form
     main_form->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -34,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
     connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(ChangeDevice(int)));
     connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(OpenPlayList()));
-    connect(main_form->pushButton, SIGNAL(clicked()), this, SLOT(changeEq()));
+    connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
     //connect(main_form->slider_87, SIGNAL(valueChanged(int)), core, SLOT(ChangeParametrEqalizer(int)));
 }
 
@@ -59,11 +63,11 @@ void MainWindow::OpenFile()
                                                           "Audio (*.mp3 *.raw *.waw);;All files (*.*)");
 
     parseFileList(file_list);
-    QStringList::const_iterator constIterator;
+    /*QStringList::const_iterator constIterator;
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
         play_list.append((*constIterator).toLocal8Bit().constData());
-    }
+    }*/
     refreshList();
 }
 
@@ -72,16 +76,30 @@ void MainWindow::parseFileList(QStringList &file_list)
     QStringList::const_iterator constIterator;
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
-        QFile* file = new QFile((*constIterator).toLocal8Bit().constData());
-        if (file->open(QIODevice::ReadOnly | QIODevice::Text))
+        TagLib::MPEG::File mp3file((*constIterator).toLocal8Bit().constData());
+        /*TagLib::ID3v2::Tag* mp3tag = mp3file.ID3v2Tag();
+        if (mp3tag)
         {
-            QByteArray arr = file->readAll();
-            if (arr != NULL)
-            {
-                qDebug() << arr;
-            }
-            else
-                qDebug() << "Файл не прочитан.";
+           TagLib::String artist = mp3tag->artist();
+           qDebug() << artist.to8Bit().data();
+        }*/
+        if (mp3file.hasID3v2Tag())
+        {
+            TagLib::ID3v2::Tag* mp3tag = mp3file.ID3v2Tag();
+            QString artist = QString("%1 - %2").arg(mp3tag->artist().to8Bit().data()).arg(mp3tag->title().to8Bit().data() );
+            int duration = mp3file.audioProperties()->length();
+            trackName.append(artist);
+            trackPath.insert(artist, (*constIterator).toLocal8Bit().constData());
+            trackTime.insert(artist, duration);
+        }
+        else if(mp3file.hasID3v1Tag())
+        {
+            TagLib::ID3v1::Tag* mp3tag = mp3file.ID3v1Tag();
+            QString artist = QString("%1 - %2").arg(mp3tag->artist().to8Bit().data()).arg(mp3tag->title().to8Bit().data());
+            int duration = mp3file.audioProperties()->length();
+            trackName.append(artist);
+            trackPath.insert(artist, (*constIterator).toLocal8Bit().constData());
+            trackTime.insert(artist, duration);
         }
     }
 }
@@ -120,6 +138,7 @@ void MainWindow::GetSelectedIndex(QModelIndex index)
     QString path = trackPath.value(trackName.at(index.row()));
     qDebug() << path;
     StartPlay(path);
+    currentPlayTrack = index.row();
 }
 
 void MainWindow::StartPlay(QString path)
@@ -204,10 +223,4 @@ void MainWindow::DeviceChanged(int index)
 {
     qDebug() << "Changed device" << index;
 
-}
-
-void MainWindow::changeEq()
-{
-    main_form->slider_33->setValue(15);
-    qDebug() <<"value chage on 15";
 }

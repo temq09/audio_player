@@ -6,8 +6,9 @@ AudioCore::AudioCore(QObject *parent, int volume) :
 {
     //initialization variables
     stateAudioSystem = false;
-    //trackRestart = false;
+    trackRestart = false;
     freq << 31.0f << 63.0f << 87.0f << 125.0f << 175.0f << 250.0f << 350.0f << 500.0f << 700.0f << 1000.0f << 1400.0f << 2000.0f << 2800.0f << 4000.0f << 5600.0f << 8000.0f << 11200.0f << 16000.0f;
+    //id3 = nullptr;
 
     //initialization audioSystem
     stateAudioSystem = BASS_Init(-1,44100, 0,0, NULL);
@@ -56,10 +57,14 @@ void AudioCore::HandleError(int errorCode)
     qDebug() << "Код ошибки: "<< errorCode;
 }
 
-static void* SyncProc(HSYNC handle, DWORD channel, DWORD data, void *user)
+void CALLBACK AudioCore::TrackEnd(HSYNC handle, DWORD channel, DWORD data, void *user)
 {
     qDebug() << "Конец трека";
-    //emit SwitchTrack();
+}
+
+void AudioCore::SendSignalTrackEnd()
+{
+    emit SwitchTrack();
 }
 
 void AudioCore::PlayTrack(QString path)
@@ -94,7 +99,8 @@ void AudioCore::PlayTrack(QString path)
     {
         qDebug() <<"Ok";
         VolumeChange(volume);
-        InitializeEqlizer();
+        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , TrackEnd, 0);
+       // InitializeEqlizer();
     }
     if (!BASS_ChannelPlay(stream, trackRestart))
     {

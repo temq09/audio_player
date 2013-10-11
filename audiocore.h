@@ -18,6 +18,7 @@ public:
     void PlayTrack(QString path);
     void StopTrack();
     void PauseTrack();
+    void SendSignalTrackEnd();
 
 private:
     bool stateAudioSystem;
@@ -31,10 +32,11 @@ private:
     static const int channel_count = 19;
     QList<float> freq;
     BASS_DX8_PARAMEQ parametr;
+    TAG_ID3* id3;
+    static AudioCore* audiocore;
 
     void InitializeEqlizer();
-    //void SyncProc(HSYNC handle, DWORD channel, DWORD data, void *user);
-
+    static void CALLBACK TrackEnd(HSYNC handle, DWORD channel, DWORD data, void *user);
 
 public slots:
     void VolumeChange(int value);

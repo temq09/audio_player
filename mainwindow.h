@@ -18,6 +18,14 @@
 #include <QList>
 #include <QMultiMap>
 #include <QItemSelectionModel>
+#include <taglib/taglib.h>
+#include <taglib/id3v1tag.h>
+#include <taglib/id3v2tag.h>
+#include <taglib/id3v2frame.h>
+#include <taglib/mpegfile.h>
+#include <taglib/fileref.h>
+#include <taglib/tstring.h>
+#include <taglib/tpropertymap.h>
 
 namespace Ui {
 class MainWindow;
@@ -48,6 +56,7 @@ private:
     int currentPlayTrack;
     int fx[];
     int channel_count;
+    TagLib::ID3v2::Tag* tag;
 
 
     void refreshList();
@@ -67,7 +76,6 @@ private slots:
     void DurationTrack(int duration);
     void DeviceChanged(int index);
     void OpenPlayList();
-    void changeEq();
 
 };
 
