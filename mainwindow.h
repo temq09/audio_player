@@ -70,6 +70,7 @@ private slots:
     void DurationTrack(int duration);
     void DeviceChanged(int index);
     void OpenPlayList();
+    void SavePlayList();
 
 };
 

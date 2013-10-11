@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(ChangeDevice(int)));
     connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(OpenPlayList()));
     connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
+    connect(main_form->btn_SavePlayList, SIGNAL(clicked()), this, SLOT(SavePlayList()));
     //connect(main_form->slider_87, SIGNAL(valueChanged(int)), core, SLOT(ChangeParametrEqalizer(int)));
 }
 
@@ -211,4 +212,34 @@ void MainWindow::DeviceChanged(int index)
 {
     qDebug() << "Changed device" << index;
 
+}
+
+void MainWindow::SavePlayList()
+{
+    const QString title = "#EXTM3U";
+    const QString body = "#EXTINF";
+
+    QString filename = QFileDialog::getSaveFileName(this,
+                                                    tr("Save Playlist"),
+                                                    QDir::currentPath(),
+                                                    tr("PlayList (*.m3u)"));
+    qDebug() << filename;
+
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Файл не открыт.";
+    }
+    else
+    {
+        QTextStream out(&file);
+        out << title << "\n\n";
+
+        QList<QString>::const_iterator constIterator;
+        for(constIterator = trackName.constBegin(); constIterator != trackName.constEnd(); constIterator++)
+        {
+            QString artist = (*constIterator).toLocal8Bit().constData();
+            out << body <<":" << trackTime.value(artist) << "," << artist << "\n" << trackPath.value(artist) << "\n\n";
+        }
+    }
 }
