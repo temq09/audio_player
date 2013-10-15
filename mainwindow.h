@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QStringListModel>
 #include <QAudioDeviceInfo>
+#include "modernslider.h"
 #include "audioplayer_core.h"
 #include <QAudioOutputSelectorControl>
 #include <audiocore.h>
@@ -18,10 +19,12 @@
 #include <QList>
 #include <QMultiMap>
 #include <QItemSelectionModel>
+#include <QAction>
 #include <taglib/taglib.h>
 #include <taglib/id3v1tag.h>
 #include <taglib/id3v2tag.h>
 #include <taglib/mpegfile.h>
+#include "form.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,13 +54,18 @@ private:
     QMultiMap<QString, int> trackTime;
     int currentPlayTrack;
     int channel_count;
-
+    QAction* act_Info;
+    QAction* act_deleteFailFromPlayList;
+    QAction* act_deleteFailFromDisk;
+    modernSlider* mySlider;
+    Form* form_info;
 
     void refreshList();
     void StartPlay(QString path);
     void parseFileList(QStringList &file_list);
     void initializeEqalizerScrollBar();
     void changeFocusToNextTrack(int row);
+    void ConnectedSlyderSignalsAndSlots();
 
 private slots:
     void OpenFile();
@@ -71,6 +79,15 @@ private slots:
     void DeviceChanged(int index);
     void OpenPlayList();
     void SavePlayList();
+    void Info();
+    void DeleteFailFromDisk();
+    void DeleteFailFromPlayList();
+
+public slots:
+    void handleSliderMoved(QString objectName);
+
+signals:
+    void SliderChangeWithName(QString name, int value);
 
 };
 

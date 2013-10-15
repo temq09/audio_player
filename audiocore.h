@@ -6,6 +6,7 @@
 #include <QList>
 #include <lib/bass.h>
 #include <QDebug>
+#include <lib/bass_fx.h>
 
 class AudioCore : public QObject
 {
@@ -28,12 +29,13 @@ private:
     HCHANNEL ch;
     void HandleError(int errorCode);
     float volume;
-    int fx[];
-    static const int channel_count = 19;
+    HFX fx[];
+    static const int channel_count = 16;
     QList<float> freq;
     BASS_DX8_PARAMEQ parametr;
     TAG_ID3* id3;
     static AudioCore* audiocore;
+
 
     void InitializeEqlizer();
     static void CALLBACK TrackEnd(HSYNC handle, DWORD channel, DWORD data, void *user);
@@ -41,7 +43,7 @@ private:
 public slots:
     void VolumeChange(int value);
     void ChangeDevice(int index);
-    void ChangeParametrEqalizer(int value);
+    void ChangeParametrEqalizer(QString name,int value);
 
 signals:
     void SwitchTrack();

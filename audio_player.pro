@@ -16,15 +16,18 @@ SOURCES += main.cpp\
     audioplayer_core.cpp \
     audiocore.cpp \
     parseplaylist.cpp \
-    modernslider.cpp
+    modernslider.cpp \
+    form.cpp
 
 HEADERS  += mainwindow.h \
     audioplayer_core.h \
     audiocore.h \
     parseplaylist.h \
-    modernslider.h
+    modernslider.h \
+    form.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    form.ui
 
 #LIBS += -L../lib
 #LIBS += $$PWD/../Source/lib/bass.lib
@@ -36,3 +39,4 @@ LIBS += -L"D:\work\taglib\bin"
 LIBS += -llibtag
 LIBS += -L"C:\tmp"
 LIBS += -lbass
+LIBS += -lbass_fx

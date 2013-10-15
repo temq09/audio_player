@@ -7,7 +7,7 @@ AudioCore::AudioCore(QObject *parent, int volume) :
     //initialization variables
     stateAudioSystem = false;
     trackRestart = false;
-    freq << 31.0f << 63.0f << 87.0f << 125.0f << 175.0f << 250.0f << 350.0f << 500.0f << 700.0f << 1000.0f << 1400.0f << 2000.0f << 2800.0f << 4000.0f << 5600.0f << 8000.0f << 11200.0f << 16000.0f;
+    freq << 87.0f << 125.0f << 175.0f << 250.0f << 350.0f << 500.0f << 700.0f << 1000.0f << 1400.0f << 2000.0f << 2800.0f << 4000.0f << 5600.0f << 8000.0f << 11200.0f << 16000.0f;
     //id3 = nullptr;
 
     //initialization audioSystem
@@ -28,18 +28,19 @@ AudioCore::AudioCore(QObject *parent, int volume) :
 
 void AudioCore::InitializeEqlizer()
 {
-    for (int i = 0; i < channel_count-1; i++)
+    for (int i = 0; i < channel_count; i++)
     {
         fx[i] = BASS_ChannelSetFX(stream,BASS_FX_DX8_PARAMEQ, 0);
         qDebug() << i << " ";
     }
-    fx[channel_count-1] = BASS_ChannelSetFX(stream, BASS_FX_DX8_REVERB, 0);
+    //fx[channel_count-1] = BASS_ChannelSetFX(stream, BASS_FX_DX8_REVERB, 0);
 
     parametr.fBandwidth = 1.0f;
     parametr.fGain = 0.0f;
-    for (int i = 0; i < channel_count - 1; i++)
+
+    for (int i = 0; i < channel_count ; i++)
     {
-        parametr.fCenter = freq.at(i);
+        parametr.fCenter = 87.0f;
         fx[i] = BASS_FXSetParameters(stream, &parametr);
         qDebug() << " Initializ parametr";
     }
@@ -60,6 +61,17 @@ void AudioCore::HandleError(int errorCode)
 void CALLBACK AudioCore::TrackEnd(HSYNC handle, DWORD channel, DWORD data, void *user)
 {
     qDebug() << "Конец трека";
+    Q_ASSERT(user);
+    AudioCore* ptr = static_cast<AudioCore*>(user);
+    if(ptr)
+    {
+        qDebug() << "Переключаем трек";
+        ptr->SendSignalTrackEnd();
+    }
+    else
+    {
+        qDebug() << "Класс не найден";
+    }
 }
 
 void AudioCore::SendSignalTrackEnd()
@@ -99,8 +111,8 @@ void AudioCore::PlayTrack(QString path)
     {
         qDebug() <<"Ok";
         VolumeChange(volume);
-        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , TrackEnd, 0);
-       // InitializeEqlizer();
+        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , TrackEnd, this);
+        //InitializeEqlizer();
     }
     if (!BASS_ChannelPlay(stream, trackRestart))
     {
@@ -167,7 +179,11 @@ void AudioCore::ChangeDevice(int index)
     }
 }
 
-void AudioCore::ChangeParametrEqalizer(int value)
+void AudioCore::ChangeParametrEqalizer(QString name, int value)
 {
-
+    qDebug() << value;
+    qDebug() << name;
+    //qDebug() << name;
+   /* parametr.fGain = value;
+    fx[0] = BASS_FXSetParameters(stream, &parametr);*/
 }

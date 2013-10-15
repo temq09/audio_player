@@ -21,7 +21,7 @@ Form::Form(QWidget *parent, QString Title, QString Autor, QString Album, QString
     ui->lb_setNumTrack->setText(QString::number(NumTrack));
     ui->lb_setDuration->setText(QString::number(Duration));
     ui->lb_setQuality->setText((QString("%1 kbps").arg(QString::number(Bitrate))));
-    ui->lb_setSize->setText(QString("%1 Mb.").arg(QString::number(Size/100000)));
+    ui->lb_setSize->setText(QString("%1 Mb.").arg(QString::number(Size/1000000)));
 }
 
 Form::~Form()
