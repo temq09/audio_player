@@ -1,5 +1,6 @@
 #ifndef PARSEPLAYLIST_H
 #define PARSEPLAYLIST_H
+
 #include <iostream>
 #include <QFile>
 #include <QMessageBox>

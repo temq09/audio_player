@@ -4,9 +4,8 @@
 #include <QAudioOutput>
 #include <QAudio>
 #include <QList>
-#include <lib/bass.h>
 #include <QDebug>
-#include <lib/bass_fx.h>
+#include "src/bass/bass.h"
 
 class AudioCore : public QObject
 {
@@ -20,6 +19,7 @@ public:
     void StopTrack();
     void PauseTrack();
     void SendSignalTrackEnd();
+    void PlayRadio(QString url);
 
 private:
     bool stateAudioSystem;
@@ -29,7 +29,7 @@ private:
     HCHANNEL ch;
     void HandleError(int errorCode);
     float volume;
-    HFX fx[];
+    HFX fx[16];
     static const int channel_count = 16;
     QList<float> freq;
     BASS_DX8_PARAMEQ parametr;

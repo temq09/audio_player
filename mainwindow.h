@@ -3,18 +3,12 @@
 
 #include <QMainWindow>
 #include <QFile>
-#include <QtMultimedia/QAudioOutput>
-#include <QtMultimedia/QAudioFormat>
-#include <QtMultimedia/QAudioDeviceInfo>
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
 #include <QStringListModel>
-#include <QAudioDeviceInfo>
 #include "modernslider.h"
-#include "audioplayer_core.h"
-#include <QAudioOutputSelectorControl>
-#include <audiocore.h>
+#include "audiocore.h"
 #include "parseplaylist.h"
 #include <QList>
 #include <QMultiMap>
@@ -25,6 +19,7 @@
 #include <taglib/id3v2tag.h>
 #include <taglib/mpegfile.h>
 #include "form.h"
+#include "form_addradio.h"
 
 namespace Ui {
 class MainWindow;
@@ -43,11 +38,7 @@ private:
     QStringList play_list;
     QStringListModel model;
     QItemSelectionModel* selectmodel;
-    AudioPlayer_core* player;
     int currentVolume;
-    QAudioDeviceInfo deviceInfo;
-    QAudioFormat settings;
-    QAudioOutput *outputDevice;
     AudioCore *core;
     QList<QString> trackName;
     QMultiMap<QString, QString> trackPath;
@@ -59,13 +50,17 @@ private:
     QAction* act_deleteFailFromDisk;
     modernSlider* mySlider;
     Form* form_info;
+    form_addRadio* form_Radio;
+
 
     void refreshList();
     void StartPlay(QString path);
+    void StartPlayRadio(QString path);
+    void ChoosePlay(int index);
     void parseFileList(QStringList &file_list);
     void initializeEqalizerScrollBar();
     void changeFocusToNextTrack(int row);
-    void ConnectedSlyderSignalsAndSlots();
+    //void ConnectedSlyderSignalsAndSlots();
 
 private slots:
     void OpenFile();
@@ -75,16 +70,20 @@ private slots:
     void Pause();
     void Next();
     void Previous();
-    void DurationTrack(int duration);
-    void DeviceChanged(int index);
     void OpenPlayList();
     void SavePlayList();
     void Info();
     void DeleteFailFromDisk();
     void DeleteFailFromPlayList();
+    void Mute(bool state);
+    void CheckMute();
+    void ClearFormInfo();
+    void AddRadio();
+    void AddRadioToPlayList(QString url, QString nameRadio);
+    void ClearFormAddRadio();
 
 public slots:
-    void handleSliderMoved(QString objectName);
+    //void handleSliderMoved(QString objectName);
 
 signals:
     void SliderChangeWithName(QString name, int value);

@@ -13,30 +13,34 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    audioplayer_core.cpp \
     audiocore.cpp \
     parseplaylist.cpp \
     modernslider.cpp \
-    form.cpp
+    form.cpp \
+    form_addradio.cpp
 
 HEADERS  += mainwindow.h \
-    audioplayer_core.h \
     audiocore.h \
     parseplaylist.h \
     modernslider.h \
-    form.h
+    form.h \
+    form_addradio.h
 
 FORMS    += mainwindow.ui \
-    form.ui
+    form.ui \
+    form_addradio.ui
 
-#LIBS += -L../lib
-#LIBS += $$PWD/../Source/lib/bass.lib
-#LIBS += -lbass
+DEFINES += NOMINMAX
 
-INCLUDEPATH += "D:\\work\\taglib\\include"
+#if minGw
+#INCLUDEPATH += "D:\\work\\taglib\\include"
+#LIBS += -L"D:\\Qt_app\\audio_player\\src\\libtag"
+#LIBS += -llibtag
 
-LIBS += -L"D:\work\taglib\bin"
-LIBS += -llibtag
-LIBS += -L"C:\tmp"
+#if MSVC 2012
+INCLUDEPATH += "D:\\work\\taglib_msvc2012\\include"
+LIBS += -L"D:\\Qt_app\\audio_player\\src\\libtag_msvc2012"
+LIBS += -ltag
+
+LIBS += -L"D:\\Qt_app\\audio_player\\src\\bass"
 LIBS += -lbass
-LIBS += -lbass_fx

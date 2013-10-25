@@ -13,8 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //setting variables
     currentVolume = 50;
     currentPlayTrack = 0;
-    player = new AudioPlayer_core(this, currentVolume);
     core = new AudioCore(this, currentVolume);
+    form_Radio = NULL;
     /*mySlider = new modernSlider(this);
     mySlider->setObjectName("slider 1");
     mySlider->setWindowIconText("asdf");
@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     main_form->listView->setDragDropMode(QAbstractItemView::DragDrop);
 
     //connect block
-    ConnectedSlyderSignalsAndSlots();
+    //ConnectedSlyderSignalsAndSlots();
     connect(main_form->btn_OpenFile, SIGNAL(clicked()), this, SLOT(OpenFile()));
     connect(main_form->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(GetSelectedIndex(QModelIndex)));
     connect(main_form->btn_Play, SIGNAL(clicked()), this, SLOT(Play()));
@@ -37,14 +37,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->btn_Stop, SIGNAL(clicked()), this, SLOT(Stop()));
     connect(main_form->btn_Next, SIGNAL(clicked()), this, SLOT(Next()));
     connect(main_form->btn_Previous, SIGNAL(clicked()), this, SLOT(Previous()));
-    connect(main_form->cb_device, SIGNAL(activated(int)), this, SLOT(DeviceChanged(int)));
     connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(VolumeChange(int)));
+    connect(main_form->sb_volume, SIGNAL(valueChanged(int)), this, SLOT(CheckMute()));
     connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
     connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(ChangeDevice(int)));
     connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(OpenPlayList()));
     connect(core, SIGNAL(SwitchTrack()), this, SLOT(Next()));
     connect(main_form->btn_SavePlayList, SIGNAL(clicked()), this, SLOT(SavePlayList()));
     connect(this, SIGNAL(SliderChangeWithName(QString,int)), core, SLOT(ChangeParametrEqalizer(QString,int)));
+    connect(main_form->cBox_Mute, SIGNAL(toggled(bool)), this, SLOT(Mute(bool)));
+    connect(main_form->btn_AddRadio, SIGNAL(clicked()), this, SLOT(AddRadio()));
     //connect(main_form->slider_87, SIGNAL, core, SLOT(ChangeParametrEqalizer(int)));
     main_form->listView->setContextMenuPolicy(Qt::ActionsContextMenu);
     act_Info = new QAction("Информация о файле", main_form->listView);
@@ -60,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     main_form->listView->addAction(act_deleteFailFromDisk);
 }
 
-void MainWindow::ConnectedSlyderSignalsAndSlots()
+/*void MainWindow::ConnectedSlyderSignalsAndSlots()
 {
     connect(main_form->slider_87, SIGNAL(objectNameChanged(QString)), this, SLOT(handleSliderMoved(QString)));
     connect(main_form->slider_125, SIGNAL(objectNameChanged(QString)), this, SLOT(handleSliderMoved(QString)));
@@ -78,22 +80,21 @@ void MainWindow::ConnectedSlyderSignalsAndSlots()
     connect(main_form->slider_8000, SIGNAL(objectNameChanged(QString)), this, SLOT(handleSliderMoved(QString)));
     connect(main_form->slider_11200, SIGNAL(objectNameChanged(QString)), this, SLOT(handleSliderMoved(QString)));
     connect(main_form->slider_16000, SIGNAL(objectNameChanged(QString)), this, SLOT(handleSliderMoved(QString)));
-}
+}*/
 
 
 
 void MainWindow::initializeEqalizerScrollBar()
 {
-    //connect(main_form->slider_33, SIGNAL())
 
 }
 
 MainWindow::~MainWindow()
 {
+    qDebug() << "Erase mainform";
     delete main_form;
-    delete player;
     delete core;
-    delete form_info;
+
 }
 
 void MainWindow::OpenFile()
@@ -103,7 +104,9 @@ void MainWindow::OpenFile()
                                                           "C:/",
                                                           "Audio (*.mp3 *.raw *.waw);;All files (*.*)");
 
+    qDebug() << "Парсим";
     parseFileList(file_list);
+    qDebug() << "Обновляем";
     refreshList();
 }
 
@@ -112,18 +115,26 @@ void MainWindow::parseFileList(QStringList &file_list)
     QStringList::const_iterator constIterator;
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
-        TagLib::MPEG::File mp3file((*constIterator).toLocal8Bit().constData());
+        qDebug() << "открываем";
+        TagLib::MPEG::File mp3file((*constIterator).toUtf8().constData());
+        //TagLib::MPEG::File mp3file("C:\\tmp\\test.mp3");
+        qDebug() << "Открыли";
         if (mp3file.hasID3v2Tag())
         {
+            qDebug() << "Создаем тег";
             TagLib::ID3v2::Tag* mp3tag = mp3file.ID3v2Tag();
+            qDebug() << "Артист";
             QString artist = QString("%1 - %2").arg(mp3tag->artist().to8Bit().data()).arg(mp3tag->title().to8Bit().data() );
+            qDebug() << "длинна";
             int duration = mp3file.audioProperties()->length();
+            qDebug() << "Добавляем в контейрнеры";
             trackName.append(artist);
             trackPath.insert(artist, (*constIterator).toLocal8Bit().constData());
             trackTime.insert(artist, duration);
         }
         else if(mp3file.hasID3v1Tag())
         {
+            qDebug() << "Создаем тег в1";
             TagLib::ID3v1::Tag* mp3tag = mp3file.ID3v1Tag();
             QString artist = QString("%1 - %2").arg(mp3tag->artist().to8Bit().data()).arg(mp3tag->title().to8Bit().data());
             int duration = mp3file.audioProperties()->length();
@@ -164,17 +175,21 @@ void MainWindow::refreshList()
 void MainWindow::GetSelectedIndex(QModelIndex index)
 {
     qDebug() << index.row();
-    //emit StartPlay(index);
-    QString path = trackPath.value(trackName.at(index.row()));
+    /*QString path = trackPath.value(trackName.at(index.row()));
     qDebug() << path;
-    StartPlay(path);
+    StartPlay(path);*/
+    ChoosePlay(index.row());
     currentPlayTrack = index.row();
 }
 
 void MainWindow::StartPlay(QString path)
 {
-    //player->PlayTrack2(path);
     core->PlayTrack(path);
+}
+
+void MainWindow::StartPlayRadio(QString path)
+{
+    core->PlayRadio(path);
 }
 
 void MainWindow::Play()
@@ -183,38 +198,53 @@ void MainWindow::Play()
     index = main_form->listView->currentIndex().row();
     if(index != -1)
     {
-        QString path = trackPath.value(trackName.at(index));
-        currentPlayTrack = index;
-        StartPlay(path);
+        ChoosePlay(index);
     }
 }
 
 void MainWindow::Pause()
 {
-    //player->PauseTrack();
+    if(trackName.isEmpty())
+    {
+        qDebug() << "Плей лист пустой, него ставить на паузу";
+        return;
+    }
+    if(trackTime.value(trackName.at(currentPlayTrack)) == -1)
+    {
+        QMessageBox mes;
+        mes.setText("Нельзя ставить радио на паузу.");
+        mes.exec();
+        return;
+    }
     core->PauseTrack();
 }
 
 void MainWindow::Stop()
 {
-    //player->StopTrack();
     core->StopTrack();
 }
 
 void MainWindow::Next()
 {
     int index = -1;
-    index = currentPlayTrack+1;
+    if(main_form->cBox_random->isChecked())
+    {
+        int range = trackName.size();
+        index = rand()%range;
+    }
+    else
+    {
+        index = currentPlayTrack+1;
+    }
+
     if (index != -1)
     {
         if(index > trackName.size()-1)
         {
             index = 0;
         }
-        QString path = trackPath.value(trackName.at(index));
+        ChoosePlay(index);
         changeFocusToNextTrack(index);
-        currentPlayTrack = index;
-        StartPlay(path);
     }
 }
 
@@ -232,9 +262,21 @@ void MainWindow::Previous()
         {
             index = 0;
         }
-        QString path = trackPath.value(trackName.at(index));
+        ChoosePlay(index);
         changeFocusToNextTrack(index);
-        currentPlayTrack = index;
+    }
+}
+
+void MainWindow::ChoosePlay(int index)
+{
+    QString path = trackPath.value(trackName.at(index));
+    currentPlayTrack = index;
+    if(trackTime.value(trackName.at(index)) == -1)
+    {
+        StartPlayRadio(path);
+    }
+    else if (trackTime.value(trackName.at(index)) > 0)
+    {
         StartPlay(path);
     }
 }
@@ -242,17 +284,6 @@ void MainWindow::Previous()
 void MainWindow::changeFocusToNextTrack(int row)
 {
     main_form->listView->selectionModel()->select(model.index(row, 0), QItemSelectionModel::ClearAndSelect);
-}
-
-void MainWindow::DurationTrack(int duration)
-{
-    qDebug() <<"Продолжительность песни" << duration;
-}
-
-void MainWindow::DeviceChanged(int index)
-{
-    qDebug() << "Changed device" << index;
-
 }
 
 void MainWindow::SavePlayList()
@@ -285,7 +316,7 @@ void MainWindow::SavePlayList()
     }
 }
 
-void MainWindow::handleSliderMoved(QString objectName)
+/*void MainWindow::handleSliderMoved(QString objectName)
 {
     qDebug() << "222111";
     //connect(this, SIGNAL(sliderChangeWithName(QString,int)), core, SLOT(ChangeParametrEqalizer(QString,int)));
@@ -359,7 +390,7 @@ void MainWindow::handleSliderMoved(QString objectName)
     default: qDebug() << "Такой слайдер не найден";
 
     }
-}
+}*/
 
 void MainWindow::DeleteFailFromPlayList()
 {
@@ -394,11 +425,16 @@ void MainWindow::Info()
         int lenght = 0;
         int bitrate = 0;
         int size = 0;
+        qDebug() << "1";
         QString PathToFile = trackPath.value(trackName.at(index));
+        qDebug() << "2";
         TagLib::MPEG::File mp3file(PathToFile.toLocal8Bit().constData());
+        qDebug() << "3";
         if(mp3file.hasID3v2Tag())
         {
+            qDebug() << "4";
             TagLib::ID3v2::Tag* tag = mp3file.ID3v2Tag();
+            qDebug() << "5";
             artist = tag->artist().to8Bit().data();
             album = tag->album().to8Bit().data();
             genre = tag->genre().to8Bit().data();
@@ -411,6 +447,77 @@ void MainWindow::Info()
             form_info = new Form(this, title, artist, album, genre, year, numTrack, lenght, bitrate, size );
             form_info->setWindowFlags(Qt::Window);
             form_info->show();
+            connect(form_info, SIGNAL(destroyed()), this, SLOT(ClearFormInfo()));
         }
     }
+}
+
+void MainWindow::ClearFormInfo()
+{
+    delete form_info;
+    disconnect(form_info, SIGNAL(destroyed()), this, SLOT(ClearFormInfo()));
+}
+
+void MainWindow::Mute(bool state)
+{
+    if(state == true)
+    {
+        qDebug() << "Выключаем звук";
+        core->VolumeChange(0);
+    }
+    else if(state == false)
+    {
+        qDebug() << "Включаем звук";
+        core->VolumeChange(main_form->sb_volume->value());
+    }
+}
+
+void MainWindow::CheckMute()
+{
+    if(main_form->cBox_Mute->isChecked())
+    {
+        main_form->cBox_Mute->setCheckState(Qt::Unchecked);
+    }
+}
+
+void MainWindow::AddRadio()
+{
+    if(form_Radio == NULL)
+    {
+        form_Radio = new form_addRadio;
+        form_Radio->show();
+        connect(form_Radio, SIGNAL(destroyed()), SLOT(ClearFormAddRadio()));
+        connect(form_Radio, SIGNAL(send_pushOk(QString,QString)), this, SLOT(AddRadioToPlayList(QString,QString)));
+    }
+    else
+    {
+        if(!form_Radio->isActiveWindow())
+        {
+            form_Radio->activateWindow();
+        }
+    }
+}
+
+void MainWindow::AddRadioToPlayList(QString url, QString nameRadio)
+{
+    qDebug() << url;
+    qDebug() << nameRadio;
+    int i = 1;
+    while(trackName.contains(nameRadio))
+    {
+        nameRadio = QString("My radio %2").arg(i);
+        i++;
+    }
+    trackName.append(nameRadio);
+    trackTime.insert(url, -1);
+    trackPath.insert(nameRadio, url);
+    refreshList();
+}
+
+void MainWindow::ClearFormAddRadio()
+{
+    qDebug() << "Erase form_addRadio resources.";
+    disconnect(form_Radio, SIGNAL(destroyed()),this, SLOT(ClearFormAddRadio()));
+    disconnect(form_Radio, SIGNAL(send_pushOk(QString,QString)), this, SLOT(AddRadioToPlayList(QString,QString)));
+    form_Radio = NULL;
 }

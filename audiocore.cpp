@@ -100,6 +100,13 @@ void AudioCore::PlayTrack(QString path)
     }
 
     qDebug() << "Создаем stream";
+
+    //эта проверка введена из-за проигрывания радио, т.к. могут создаваться сразу два потока: один для радио другой для файла
+    if(stream)
+    {
+        BASS_StreamFree(stream);
+    }
+
     stream = BASS_StreamCreateFile(FALSE,path.toStdString().c_str() , 0,0, BASS_SAMPLE_FX);
     if(!stream)
     {
@@ -122,6 +129,37 @@ void AudioCore::PlayTrack(QString path)
     {
         qDebug() << "Начинаем воспроизводить трек";
        // BASS_ChannelSetSync(stream, BASS_SYNC_ONETIME, BASS_SYNC_END, SyncProc, 0);
+    }
+}
+
+void AudioCore::PlayRadio(QString url)
+{
+    if(stream)
+    {
+        BASS_StreamFree(stream);
+    }
+    stream = BASS_StreamCreateURL(url.toStdString().c_str(), 0, 0, NULL, 0);
+    if(!stream)
+    {
+        qDebug() << "Ошибка воспроизведения радио";
+        HandleError(BASS_ErrorGetCode());
+        return;
+    }
+    else
+    {
+        qDebug() << "radio play ok";
+        VolumeChange(volume);
+        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , TrackEnd, this);
+    }
+
+    if(!BASS_ChannelPlay(stream, trackRestart))
+    {
+        qDebug() << "Ошибка воспроизведения радио";
+        HandleError(BASS_ErrorGetCode());
+    }
+    else
+    {
+        qDebug() << "Начинаем воспроизводить радио";
     }
 }
 
