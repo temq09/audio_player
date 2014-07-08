@@ -128,20 +128,17 @@ void MainWindow::parseFileList(QStringList &file_list)
             qDebug() << "длинна";
             int duration = mp3file.audioProperties()->length();
             qDebug() << "Добавляем в контейрнеры";
-            trackName.append(artist);
-            trackPath.insert(artist, (*constIterator).toLocal8Bit().constData());
-            trackTime.insert(artist, duration);
         }
         else if(mp3file.hasID3v1Tag())
         {
             qDebug() << "Создаем тег в1";
             TagLib::ID3v1::Tag* mp3tag = mp3file.ID3v1Tag();
             QString artist = QString("%1 - %2").arg(mp3tag->artist().to8Bit().data()).arg(mp3tag->title().to8Bit().data());
-            int duration = mp3file.audioProperties()->length();
-            trackName.append(artist);
-            trackPath.insert(artist, (*constIterator).toLocal8Bit().constData());
-            trackTime.insert(artist, duration);
+            int duration = mp3file.audioProperties()->length();            
         }
+        trackName.append(artist);
+        trackPath.insert(artist, (*constIterator).toLocal8Bit().constData());
+        trackTime.insert(artist, duration);
     }
 }
 
