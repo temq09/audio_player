@@ -14,12 +14,15 @@
 #include <QMultiMap>
 #include <QItemSelectionModel>
 #include <QAction>
-#include <taglib/taglib.h>
-#include <taglib/id3v1tag.h>
-#include <taglib/id3v2tag.h>
-#include <taglib/mpegfile.h>
+#include <QElapsedTimer>
+#include <taglib.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <mpegfile.h>
+#include <readertag.h>
 #include "form.h"
 #include "form_addradio.h"
+#include "readertagcreator.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,7 +54,6 @@ private:
     modernSlider* mySlider;
     Form* form_info;
     form_addRadio* form_Radio;
-
 
     void refreshList();
     void StartPlay(QString path);

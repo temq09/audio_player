@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 using namespace std;
-using namespace TagLib;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -101,7 +100,7 @@ void MainWindow::OpenFile()
 {
     QStringList file_list = QFileDialog::getOpenFileNames(this,
                                                           "Открыть файлы",
-                                                          "C:/",
+                                                          "D:\\",
                                                           "Audio (*.mp3 *.raw *.waw);;All files (*.*)");
 
     qDebug() << "Парсим";
@@ -113,40 +112,27 @@ void MainWindow::OpenFile()
 void MainWindow::parseFileList(QStringList &file_list)
 {
     QStringList::const_iterator constIterator;
+    QElapsedTimer timer;
+    timer.start();
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
-        qDebug() << "открываем";
-        TagLib::MPEG::File mp3file((*constIterator).toUtf8().constData());
-        //TagLib::MPEG::File mp3file("C:\\tmp\\test.mp3");
-        qDebug() << "Открыли";
-        if (mp3file.hasID3v2Tag())
-        {
-            qDebug() << "Создаем тег";
-            TagLib::ID3v2::Tag* mp3tag = mp3file.ID3v2Tag();
-            qDebug() << "Артист";
-            QString artist = QString("%1 - %2").arg(mp3tag->artist().to8Bit().data()).arg(mp3tag->title().to8Bit().data() );
-            qDebug() << "длинна";
-            int duration = mp3file.audioProperties()->length();
-            qDebug() << "Добавляем в контейрнеры";
-        }
-        else if(mp3file.hasID3v1Tag())
-        {
-            qDebug() << "Создаем тег в1";
-            TagLib::ID3v1::Tag* mp3tag = mp3file.ID3v1Tag();
-            QString artist = QString("%1 - %2").arg(mp3tag->artist().to8Bit().data()).arg(mp3tag->title().to8Bit().data());
-            int duration = mp3file.audioProperties()->length();            
-        }
-        trackName.append(artist);
-        trackPath.insert(artist, (*constIterator).toLocal8Bit().constData());
-        trackTime.insert(artist, duration);
+        qDebug() << "открываем новый файл";
+
+        ReaderTag *reader = ReaderTagCreator::createReaderTag(QString((*constIterator).toLocal8Bit()));
+        TagInfo tag = reader->getTag();
+
+        trackName.append(tag.title);
+        trackPath.insert(tag.title, (*constIterator).toLocal8Bit().constData());
+        trackTime.insert(tag.title, tag.length);
     }
+    qDebug() << timer.nsecsElapsed();
 }
 
 void MainWindow::OpenPlayList()
 {
     QString playList = QFileDialog::getOpenFileName(this,
                                                         "Открыть плейлист",
-                                                        "C:/",
+                                                        "D:\\",
                                                         "playlist (*.m3u)");
     ParsePlayList* parsePlaylist = new ParsePlayList;
 

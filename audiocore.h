@@ -5,7 +5,7 @@
 #include <QAudio>
 #include <QList>
 #include <QDebug>
-#include "src/bass/bass.h"
+#include <bass.h>
 
 class AudioCore : public QObject
 {

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.1.1
+** Created by: Qt User Interface Compiler version 5.3.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -23,6 +24,7 @@
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
@@ -116,6 +118,11 @@ public:
     QLabel *lb_setDevice;
     QComboBox *cb_device;
     QProgressBar *progressBar;
+    QHBoxLayout *horizontalLayout_6;
+    QCheckBox *cBox_Mute;
+    QCheckBox *cBox_random;
+    QPushButton *pushButton;
+    QSpacerItem *horizontalSpacer;
     QHBoxLayout *horizontalLayout_2;
     QPushButton *btn_Play;
     QPushButton *btn_Pause;
@@ -125,7 +132,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QPushButton *btn_SavePlayList;
     QPushButton *btn_OpenPlayList;
-    QPushButton *pushButton;
+    QPushButton *btn_AddRadio;
     QPushButton *btn_OpenFile;
     QListView *listView;
     QMenuBar *menuBar;
@@ -136,7 +143,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(510, 514);
+        MainWindow->resize(510, 543);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -757,6 +764,31 @@ public:
 
         verticalLayout->addWidget(progressBar);
 
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(6);
+        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        cBox_Mute = new QCheckBox(centralWidget);
+        cBox_Mute->setObjectName(QStringLiteral("cBox_Mute"));
+
+        horizontalLayout_6->addWidget(cBox_Mute);
+
+        cBox_random = new QCheckBox(centralWidget);
+        cBox_random->setObjectName(QStringLiteral("cBox_random"));
+
+        horizontalLayout_6->addWidget(cBox_random);
+
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        horizontalLayout_6->addWidget(pushButton);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer);
+
+
+        verticalLayout->addLayout(horizontalLayout_6);
+
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
@@ -801,10 +833,10 @@ public:
 
         horizontalLayout->addWidget(btn_OpenPlayList);
 
-        pushButton = new QPushButton(centralWidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        btn_AddRadio = new QPushButton(centralWidget);
+        btn_AddRadio->setObjectName(QStringLiteral("btn_AddRadio"));
 
-        horizontalLayout->addWidget(pushButton);
+        horizontalLayout->addWidget(btn_AddRadio);
 
         btn_OpenFile = new QPushButton(centralWidget);
         btn_OpenFile->setObjectName(QStringLiteral("btn_OpenFile"));
@@ -899,6 +931,9 @@ public:
         lb_volume->setText(QApplication::translate("MainWindow", "Volume", 0));
         lb_setDevice->setText(QApplication::translate("MainWindow", "Set Device", 0));
         progressBar->setFormat(QString());
+        cBox_Mute->setText(QApplication::translate("MainWindow", "Mute", 0));
+        cBox_random->setText(QApplication::translate("MainWindow", "Random", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "PushButton", 0));
         btn_Play->setText(QApplication::translate("MainWindow", "Play", 0));
         btn_Pause->setText(QApplication::translate("MainWindow", "Pause", 0));
         btn_Stop->setText(QApplication::translate("MainWindow", "Stop", 0));
@@ -906,7 +941,7 @@ public:
         btn_Previous->setText(QApplication::translate("MainWindow", "Previous", 0));
         btn_SavePlayList->setText(QApplication::translate("MainWindow", "\320\241\320\276\321\205\321\200\320\260\320\275\320\270\321\202\321\214 \321\202\320\265\320\272\321\203\321\211\320\270\320\271 \320\277\320\273\321\215\320\271\320\273\320\270\321\201\321\202  ", 0));
         btn_OpenPlayList->setText(QApplication::translate("MainWindow", "\320\236\321\202\320\272\321\200\321\213\321\202\321\214 \320\277\320\273\321\215\320\271\320\273\320\270\321\201\321\202", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "PushButton", 0));
+        btn_AddRadio->setText(QApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \321\200\320\260\320\264\320\270\320\276", 0));
         btn_OpenFile->setText(QApplication::translate("MainWindow", "\320\236\321\202\320\272\321\200\321\213\321\202\321\214 \321\204\320\260\320\271\320\273", 0));
     } // retranslateUi
 
