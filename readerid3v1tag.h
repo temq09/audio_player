@@ -10,6 +10,7 @@ class ReaderID3V1Tag : public ReaderTag
 {
 public:
     ReaderID3V1Tag(QString pathToFile);
+    ~ReaderID3V1Tag();
 
     TagInfo getTag();
 
@@ -22,6 +23,7 @@ private:
     int genreIndex;
     int yearIndex;
     int commentIndex;
+    QFile *file;
 
     QByteArray getInfo(int beginIndex, int endIndex, QByteArray *source);
 };

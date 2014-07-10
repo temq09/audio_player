@@ -10,19 +10,21 @@ ReaderID3V1Tag::ReaderID3V1Tag(QString pathToFile) : ReaderTag(pathToFile),
     commentIndex(97),
     genreIndex(127)
 {
+    file = new QFile(getPathToFile().toUtf8());
+    file->open(QIODevice::ReadOnly);
+}
 
+ReaderID3V1Tag::~ReaderID3V1Tag()
+{
+    if(file->isOpen())
+        file->close();
+    delete file;
 }
 
 TagInfo ReaderID3V1Tag::getTag()
 {
     qDebug() << getPathToFile();
     TagInfo tagInfo;
-    QFile *file = new QFile(getPathToFile().toUtf8());
-    if(!file->open(QIODevice::ReadOnly))
-    {
-        file->close();
-        return tagInfo;
-    }
     int offset = file->size() - byteOfTag;
     if(file->seek(offset))
     {
@@ -37,8 +39,6 @@ TagInfo ReaderID3V1Tag::getTag()
         tagInfo.album = QString(getInfo(albumIndex * 2, yearIndex * 2, &tagArray));
         tagInfo.year = getInfo(yearIndex * 2, commentIndex * 2, &tagArray).toInt();
         tagInfo.genre = QString(getInfo(genreIndex * 2 - 1, genreIndex * 2, &tagArray));
-        file->close();
-        delete file;
     }
     return tagInfo;
 }
