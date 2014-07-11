@@ -3,6 +3,9 @@
 #include <QString>
 #include <QDebug>
 #include <QByteArray>
+#include <QFile>
+#include <QDataStream>
+#include <QElapsedTimer>
 
 typedef struct TagInfo{
     TagInfo() : length(0),
@@ -34,8 +37,6 @@ public:
 private:
     QString _pathToFile;
     TagInfo tag;
-
-
 };
 
 #endif // READERTAG_H

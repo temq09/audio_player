@@ -119,11 +119,14 @@ void MainWindow::parseFileList(QStringList &file_list)
         qDebug() << "открываем новый файл";
 
         ReaderTag *reader = ReaderTagCreator::createReaderTag(QString((*constIterator).toLocal8Bit()));
-        TagInfo tag = reader->getTag();
+        if(reader != 0)
+        {
+            TagInfo tag = reader->getTag();
 
-        trackName.append(tag.title);
-        trackPath.insert(tag.title, (*constIterator).toLocal8Bit().constData());
-        trackTime.insert(tag.title, tag.length);
+            trackName.append(tag.title);
+            trackPath.insert(tag.title, (*constIterator).toLocal8Bit().constData());
+            trackTime.insert(tag.title, tag.length);
+        }
     }
     qDebug() << timer.nsecsElapsed();
 }

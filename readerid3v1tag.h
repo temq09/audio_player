@@ -1,10 +1,6 @@
 #ifndef READERID3V1TAG_H
 #define READERID3V1TAG_H
 #include "readertag.h"
-#include <QFile>
-#include <QElapsedTimer>
-#include <QDataStream>
-#include <QByteArray>
 
 class ReaderID3V1Tag : public ReaderTag
 {
