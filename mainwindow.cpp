@@ -116,7 +116,7 @@ void MainWindow::parseFileList(QStringList &file_list)
     timer.start();
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
-        qDebug() << "открываем новый файл";
+        //qDebug() << "открываем новый файл";
 
         ReaderTag *reader = ReaderTagCreator::createReaderTag(QString((*constIterator).toLocal8Bit()));
         if(reader != 0)
@@ -407,34 +407,28 @@ void MainWindow::Info()
         QString album = "Неизвестен";
         QString genre = "Неизвестен";
         int year = 0;
-        int numTrack = 0;
+        QString numTrack = 0;
         int lenght = 0;
         int bitrate = 0;
         int size = 0;
-        qDebug() << "1";
         QString PathToFile = trackPath.value(trackName.at(index));
-        qDebug() << "2";
-        TagLib::MPEG::File mp3file(PathToFile.toLocal8Bit().constData());
-        qDebug() << "3";
-        if(mp3file.hasID3v2Tag())
-        {
-            qDebug() << "4";
-            TagLib::ID3v2::Tag* tag = mp3file.ID3v2Tag();
-            qDebug() << "5";
-            artist = tag->artist().to8Bit().data();
-            album = tag->album().to8Bit().data();
-            genre = tag->genre().to8Bit().data();
-            title = tag->title().to8Bit().data();
-            year = tag->year();
-            numTrack = tag->track();
-            lenght = mp3file.audioProperties()->length();
-            bitrate = mp3file.audioProperties()->bitrate();
-            size = mp3file.length();
-            form_info = new Form(this, title, artist, album, genre, year, numTrack, lenght, bitrate, size );
-            form_info->setWindowFlags(Qt::Window);
-            form_info->show();
-            connect(form_info, SIGNAL(destroyed()), this, SLOT(ClearFormInfo()));
-        }
+        ReaderTag *reader = ReaderTagCreator::createReaderTag(PathToFile);
+        TagInfo tags = reader->getTag();
+
+        artist = tags.artist;
+        album = tags.album;
+        genre = tags.genre;
+        title = tags.title;
+        year = tags.year;
+        numTrack = tags.trackNum;
+        /*lenght = mp3file.audioProperties()->length();
+        bitrate = mp3file.audioProperties()->bitrate();
+        size = mp3file.length();*/
+        form_info = new Form(this, title, artist, album, genre, year, numTrack, lenght, bitrate, size );
+        form_info->setWindowFlags(Qt::Window);
+        form_info->show();
+        connect(form_info, SIGNAL(destroyed()), this, SLOT(ClearFormInfo()));
+
     }
 }
 

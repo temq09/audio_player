@@ -11,7 +11,6 @@ typedef struct TagInfo{
     TagInfo() : length(0),
         beatRate(0),
         year(0),
-        trackNum(0),
         size(0)
     { }
 
@@ -22,7 +21,7 @@ typedef struct TagInfo{
     int length;
     int beatRate;
     int year;
-    int trackNum;
+    QString trackNum;
     int size;
 } TagInfo;
 
