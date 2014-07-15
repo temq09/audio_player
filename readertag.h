@@ -11,18 +11,22 @@ typedef struct TagInfo{
     TagInfo() : length(0),
         beatRate(0),
         year(0),
-        size(0)
+        size(0),
+        frequency(0)
     { }
 
     QString artist;
     QString title;
     QString genre;
     QString album;
+    QString trackNum;
+    QString trackType;
+    QString channel;
     int length;
     int beatRate;
-    int year;
-    QString trackNum;
+    int year;    
     int size;
+    int frequency;
 } TagInfo;
 
 class ReaderTag

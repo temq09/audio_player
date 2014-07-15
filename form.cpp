@@ -8,20 +8,32 @@ Form::Form(QWidget *parent) :
     ui->setupUi(this);
 }
 
-Form::Form(QWidget *parent, QString Title, QString Autor, QString Album, QString Genre, int Year, QString NumTrack, int Duration, int Bitrate, int Size) :
+Form::Form(QWidget *parent,
+           QString title,
+           QString autor,
+           QString album,
+           QString genre,
+           int year,
+           QString numTrack,
+           int duration,
+           int bitrate,
+           int size,
+           int freq,
+           QString typeTrack) :
     QWidget(parent),
     ui(new Ui::Form)
 {
     ui->setupUi(this);
-    ui->lb_setTitle->setText(Title);
-    ui->lb_setAutor->setText(Autor);
-    ui->lb_setAlbum->setText(Album);
-    ui->lb_setGenre->setText(Genre);
-    ui->lb_setYear->setText(QString::number(Year));
-    ui->lb_setNumTrack->setText(NumTrack);
-    ui->lb_setDuration->setText(QString::number(Duration));
-    ui->lb_setQuality->setText((QString("%1 kbps").arg(QString::number(Bitrate))));
-    ui->lb_setSize->setText(QString("%1 Mb.").arg(QString::number(Size/1000000)));
+    ui->lb_setTitle->setText(title);
+    ui->lb_setAutor->setText(autor);
+    ui->lb_setAlbum->setText(album);
+    ui->lb_setGenre->setText(genre);
+    ui->lb_setYear->setText(QString::number(year));
+    ui->lb_setNumTrack->setText(numTrack);
+    ui->lb_setDuration->setText(QString::number(duration));
+    ui->lb_setQuality->setText((QString("%1 kbps; %2 kHz").arg(QString::number(bitrate)).arg(QString::number(freq))));
+    ui->lb_setSize->setText(QString("%1 Mb.").arg(QString::number(size/1000000)));
+    ui->lb_setFormat->setText(typeTrack);
 }
 
 Form::~Form()
