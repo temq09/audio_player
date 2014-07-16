@@ -30,17 +30,15 @@ FORMS    += mainwindow.ui \
     form.ui \
     form_addradio.ui
 
-DEFINES += NOMINMAX
-
-#if minGw
-#INCLUDEPATH += "D:\\work\\taglib\\include"
-#LIBS += -L"D:\\Qt_app\\audio_player\\src\\libtag"
-#LIBS += -llibtag
-
 #if MSVC 2012
-INCLUDEPATH += "D:\\work\\taglib_msvc2012\\include"
-LIBS += -L"D:\\Qt_app\\audio_player\\src\\libtag_msvc2012"
-LIBS += -ltag
+INCLUDEPATH += "$$PWD\\src\\libtag\\libtag_include\\taglib" \
+    "$$PWD\\src\\bass\\bass_include"
 
-LIBS += -L"D:\\Qt_app\\audio_player\\src\\bass"
-LIBS += -lbass
+LIBS += -L"$$PWD\\src\\libtag\\libtag_lib\\" \
+    -L"$$PWD\\src\\bass\\bass_lib\\"
+
+LIBS += -ltag \
+    -lbass
+
+QMAKE_CXXFLAGS += -O2
+
