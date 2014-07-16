@@ -62,7 +62,7 @@ TagInfo ReaderID3V2Tag::getTag()
         tagInfo.channel = getChannel(array);
         int offset = getOffset();
         array->clear();
-        int vbrHeaderIndex = 10 + sizeLenghtTags + 4 + offset; // индекс начала заголовка VBR
+        int vbrHeaderIndex = 10 + sizeLenghtTags + offset; // индекс начала заголовка VBR
         array = readBytesFromFile( vbrHeaderIndex, vbrHeaderIndex + 4 );
         if(array->toLower().contains("xing") || array->toLower().contains("info")) //проверяем тип заголока Xing
         {
@@ -104,7 +104,7 @@ TagInfo ReaderID3V2Tag::getTag()
                 bool id3v1tag = false;
                 if(array->contains("TAG"))
                     id3v1tag = true;
-                tagInfo.length = getLenghtTrackCBR(fileSize, tagInfo.beatRate, id3v1tag);
+                tagInfo.length = getLenghtTrackCBR(sizeLenghtTags + 10, tagInfo.beatRate, id3v1tag);
             }
         }
     }
@@ -692,16 +692,16 @@ int ReaderID3V2Tag::getSampleOnFrame()
  */
 int ReaderID3V2Tag::getLenghtTrackCBR(int sizeTags, int beatRate, bool ID3V1Tags)
 {
-    int lenght = 0;
+    double lenght = 0;
     if(sizeTags != 0 && beatRate != 0)
     {
         qint64 sizeFile = file->size();
         sizeFile = sizeFile - sizeTags;
         if(ID3V1Tags)
             sizeFile = sizeFile - 128;
-        lenght = sizeFile / beatRate * 8;
+        lenght = (double)sizeFile / (double)beatRate * 8.0;
     }
     else
         qDebug() << "Incorrect sie tags or beatRate.";
-    return lenght;
+    return (int)lenght;
 }
