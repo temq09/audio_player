@@ -47,14 +47,16 @@ public:
     QLabel *lb_album;
     QLabel *lb_setAlbum;
     QLabel *lb_genre;
+    QLabel *label;
+    QLabel *lb_pathToFile;
 
     void setupUi(QWidget *Form)
     {
         if (Form->objectName().isEmpty())
             Form->setObjectName(QStringLiteral("Form"));
-        Form->resize(587, 286);
-        Form->setMinimumSize(QSize(587, 0));
-        Form->setMaximumSize(QSize(16777215, 286));
+        Form->resize(707, 313);
+        Form->setMinimumSize(QSize(707, 313));
+        Form->setMaximumSize(QSize(10000, 313));
         verticalLayout_5 = new QVBoxLayout(Form);
         verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
         verticalLayout_2 = new QVBoxLayout();
@@ -229,6 +231,22 @@ public:
 
         gridLayout->addWidget(lb_genre, 3, 0, 1, 1);
 
+        label = new QLabel(Form);
+        label->setObjectName(QStringLiteral("label"));
+        sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy);
+        label->setFont(font);
+        label->setFrameShape(QFrame::StyledPanel);
+
+        gridLayout->addWidget(label, 10, 0, 1, 1);
+
+        lb_pathToFile = new QLabel(Form);
+        lb_pathToFile->setObjectName(QStringLiteral("lb_pathToFile"));
+        lb_pathToFile->setFont(font);
+        lb_pathToFile->setFrameShape(QFrame::StyledPanel);
+
+        gridLayout->addWidget(lb_pathToFile, 10, 1, 1, 1);
+
         gridLayout->setColumnStretch(1, 1);
 
         verticalLayout_2->addLayout(gridLayout);
@@ -265,6 +283,8 @@ public:
         lb_album->setText(QApplication::translate("Form", "\320\220\320\273\321\214\320\261\320\276\320\274", 0));
         lb_setAlbum->setText(QString());
         lb_genre->setText(QApplication::translate("Form", "\320\226\320\260\320\275\321\200", 0));
+        label->setText(QApplication::translate("Form", "\320\240\320\260\321\201\320\277\320\276\320\273\320\276\320\266\320\265\320\270\320\265", 0));
+        lb_pathToFile->setText(QString());
     } // retranslateUi
 
 };

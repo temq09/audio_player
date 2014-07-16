@@ -17,14 +17,22 @@ SOURCES += main.cpp\
     parseplaylist.cpp \
     modernslider.cpp \
     form.cpp \
-    form_addradio.cpp
+    form_addradio.cpp \
+    readertag.cpp \
+    readerid3v1tag.cpp \
+    readerid3v2tag.cpp \
+    readertagcreator.cpp
 
 HEADERS  += mainwindow.h \
     audiocore.h \
     parseplaylist.h \
     modernslider.h \
     form.h \
-    form_addradio.h
+    form_addradio.h \
+    readertag.h \
+    readerid3v1tag.h \
+    readerid3v2tag.h \
+    readertagcreator.h
 
 FORMS    += mainwindow.ui \
     form.ui \
@@ -40,5 +48,5 @@ LIBS += -L"$$PWD\\src\\libtag\\libtag_lib\\" \
 LIBS += -ltag \
     -lbass
 
-QMAKE_CXXFLAGS += -O2
+#QMAKE_CXXFLAGS += -O2
 

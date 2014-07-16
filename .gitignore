@@ -31,6 +31,7 @@ _ReSharper*/
 32x32/
 src/
 *.pro
+*.pro.user
 *.dll
 *.[Dd]ebug
 *.[Rr]elease
@@ -44,4 +45,7 @@ audio_player.pro.user.bbf3030
 audio_player.pro.user
 audio_player.pro.user
 audio_player.pro.user.bbf3030.2.7pre1
+audio_player.pro.user
+*.autosave
+*.autosave~
 audio_player.pro.user

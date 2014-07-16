@@ -14,12 +14,15 @@
 #include <QMultiMap>
 #include <QItemSelectionModel>
 #include <QAction>
-#include <taglib/taglib.h>
-#include <taglib/id3v1tag.h>
-#include <taglib/id3v2tag.h>
-#include <taglib/mpegfile.h>
+#include <QElapsedTimer>
+#include <taglib.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <mpegfile.h>
+#include <readertag.h>
 #include "form.h"
 #include "form_addradio.h"
+#include "readertagcreator.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,10 +37,10 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow* main_form;
+    Ui::MainWindow *main_form;
     QStringList play_list;
     QStringListModel model;
-    QItemSelectionModel* selectmodel;
+    QItemSelectionModel *selectmodel;
     int currentVolume;
     AudioCore *core;
     QList<QString> trackName;
@@ -45,48 +48,47 @@ private:
     QMultiMap<QString, int> trackTime;
     int currentPlayTrack;
     int channel_count;
-    QAction* act_Info;
-    QAction* act_deleteFailFromPlayList;
-    QAction* act_deleteFailFromDisk;
-    modernSlider* mySlider;
-    Form* form_info;
-    form_addRadio* form_Radio;
-
+    QAction *act_Info;
+    QAction *act_deleteFailFromPlayList;
+    QAction *act_deleteFailFromDisk;
+    modernSlider *mySlider;
+    Form *form_info;
+    form_addRadio *form_Radio;
 
     void refreshList();
-    void StartPlay(QString path);
-    void StartPlayRadio(QString path);
-    void ChoosePlay(int index);
+    void startPlay(QString path);
+    void startPlayRadio(QString path);
+    void choosePlay(int index);
     void parseFileList(QStringList &file_list);
     void initializeEqalizerScrollBar();
     void changeFocusToNextTrack(int row);
     //void ConnectedSlyderSignalsAndSlots();
 
 private slots:
-    void OpenFile();
-    void GetSelectedIndex(QModelIndex index);
-    void Play();
-    void Stop();
-    void Pause();
-    void Next();
-    void Previous();
-    void OpenPlayList();
-    void SavePlayList();
-    void Info();
-    void DeleteFailFromDisk();
-    void DeleteFailFromPlayList();
-    void Mute(bool state);
-    void CheckMute();
-    void ClearFormInfo();
-    void AddRadio();
-    void AddRadioToPlayList(QString url, QString nameRadio);
-    void ClearFormAddRadio();
+    void openFile();
+    void getSelectedIndex(QModelIndex index);
+    void play();
+    void stop();
+    void pause();
+    void next();
+    void previous();
+    void openPlayList();
+    void savePlayList();
+    void info();
+    void deleteFailFromDisk();
+    void deleteFailFromPlayList();
+    void mute(bool state);
+    void checkMute();
+    void clearFormInfo();
+    void addRadio();
+    void addRadioToPlayList(QString url, QString nameRadio);
+    void clearFormAddRadio();
 
 public slots:
     //void handleSliderMoved(QString objectName);
 
 signals:
-    void SliderChangeWithName(QString name, int value);
+    void sliderChangeWithName(QString name, int value);
 
 };
 

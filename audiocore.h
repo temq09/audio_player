@@ -5,7 +5,7 @@
 #include <QAudio>
 #include <QList>
 #include <QDebug>
-#include "src/bass/bass.h"
+#include <bass.h>
 
 class AudioCore : public QObject
 {
@@ -15,11 +15,11 @@ public:
     AudioCore(QObject *parent = 0, int volume = 50);
     ~AudioCore();
 
-    void PlayTrack(QString path);
-    void StopTrack();
-    void PauseTrack();
-    void SendSignalTrackEnd();
-    void PlayRadio(QString url);
+    void playTrack(QString path);
+    void stopTrack();
+    void pauseTrack();
+    void sendSignalTrackEnd();
+    void playRadio(QString url);
 
 private:
     bool stateAudioSystem;
@@ -27,26 +27,26 @@ private:
     HSTREAM stream;
     HSAMPLE sample;
     HCHANNEL ch;
-    void HandleError(int errorCode);
+    void handleError(int errorCode);
     float volume;
     HFX fx[16];
     static const int channel_count = 16;
     QList<float> freq;
     BASS_DX8_PARAMEQ parametr;
-    TAG_ID3* id3;
-    static AudioCore* audiocore;
+    TAG_ID3 *id3;
+    static AudioCore *audiocore;
 
 
-    void InitializeEqlizer();
-    static void CALLBACK TrackEnd(HSYNC handle, DWORD channel, DWORD data, void *user);
+    void initializeEqlizer();
+    static void CALLBACK trackEnd(HSYNC handle, DWORD channel, DWORD data, void *user);
 
 public slots:
-    void VolumeChange(int value);
-    void ChangeDevice(int index);
-    void ChangeParametrEqalizer(QString name,int value);
+    void volumeChange(int value);
+    void changeDevice(int index);
+    void changeParametrEqalizer(QString name,int value);
 
 signals:
-    void SwitchTrack();
+    void switchTrack();
 };
 
 #endif // AUDIOCORE_H

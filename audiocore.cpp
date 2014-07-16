@@ -19,14 +19,14 @@ AudioCore::AudioCore(QObject *parent, int volume) :
     else
     {
         qDebug() <<"Error";
-        HandleError(BASS_ErrorGetCode());
+        handleError(BASS_ErrorGetCode());
     }
 
     //connect signals and slots
 
 }
 
-void AudioCore::InitializeEqlizer()
+void AudioCore::initializeEqlizer()
 {
     for (int i = 0; i < channel_count; i++)
     {
@@ -53,12 +53,12 @@ AudioCore::~AudioCore()
     BASS_Free();
 }
 
-void AudioCore::HandleError(int errorCode)
+void AudioCore::handleError(int errorCode)
 {
     qDebug() << "Код ошибки: "<< errorCode;
 }
 
-void CALLBACK AudioCore::TrackEnd(HSYNC handle, DWORD channel, DWORD data, void *user)
+void CALLBACK AudioCore::trackEnd(HSYNC handle, DWORD channel, DWORD data, void *user)
 {
     qDebug() << "Конец трека";
     Q_ASSERT(user);
@@ -66,7 +66,7 @@ void CALLBACK AudioCore::TrackEnd(HSYNC handle, DWORD channel, DWORD data, void 
     if(ptr)
     {
         qDebug() << "Переключаем трек";
-        ptr->SendSignalTrackEnd();
+        ptr->sendSignalTrackEnd();
     }
     else
     {
@@ -74,12 +74,12 @@ void CALLBACK AudioCore::TrackEnd(HSYNC handle, DWORD channel, DWORD data, void 
     }
 }
 
-void AudioCore::SendSignalTrackEnd()
+void AudioCore::sendSignalTrackEnd()
 {
-    emit SwitchTrack();
+    emit switchTrack();
 }
 
-void AudioCore::PlayTrack(QString path)
+void AudioCore::playTrack(QString path)
 {
     if(BASS_ChannelIsActive(stream) == BASS_ACTIVE_PAUSED)
     {
@@ -87,7 +87,7 @@ void AudioCore::PlayTrack(QString path)
         if(!BASS_ChannelPlay(stream, trackRestart))
         {
             qDebug() << "Ошибка возобновления воспроизведения файла";
-            HandleError(BASS_ErrorGetCode());
+            handleError(BASS_ErrorGetCode());
 
         }
         return;
@@ -106,19 +106,18 @@ void AudioCore::PlayTrack(QString path)
     {
         BASS_StreamFree(stream);
     }
-
-    stream = BASS_StreamCreateFile(FALSE,path.toStdString().c_str() , 0,0, BASS_SAMPLE_FX);
+    stream = BASS_StreamCreateFile(FALSE, (WCHAR*)path.utf16(), 0,0, BASS_SAMPLE_FX);
     if(!stream)
     {
         qDebug() << "Ошибка создания потока";
-        qDebug() << path.data();
+        qDebug() << path;
         return ;
     }
     else
     {
         qDebug() <<"Ok";
-        VolumeChange(volume);
-        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , TrackEnd, this);
+        volumeChange(volume);
+        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , trackEnd, this);
         //InitializeEqlizer();
     }
     if (!BASS_ChannelPlay(stream, trackRestart))
@@ -132,7 +131,7 @@ void AudioCore::PlayTrack(QString path)
     }
 }
 
-void AudioCore::PlayRadio(QString url)
+void AudioCore::playRadio(QString url)
 {
     if(stream)
     {
@@ -142,20 +141,20 @@ void AudioCore::PlayRadio(QString url)
     if(!stream)
     {
         qDebug() << "Ошибка воспроизведения радио";
-        HandleError(BASS_ErrorGetCode());
+        handleError(BASS_ErrorGetCode());
         return;
     }
     else
     {
         qDebug() << "radio play ok";
-        VolumeChange(volume);
-        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , TrackEnd, this);
+        volumeChange(volume);
+        BASS_ChannelSetSync(stream, BASS_SYNC_END | BASS_SYNC_MIXTIME, 0 , trackEnd, this);
     }
 
     if(!BASS_ChannelPlay(stream, trackRestart))
     {
         qDebug() << "Ошибка воспроизведения радио";
-        HandleError(BASS_ErrorGetCode());
+        handleError(BASS_ErrorGetCode());
     }
     else
     {
@@ -163,7 +162,7 @@ void AudioCore::PlayRadio(QString url)
     }
 }
 
-void AudioCore::StopTrack()
+void AudioCore::stopTrack()
 {
     if(BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING || BASS_ChannelIsActive(stream) == BASS_ACTIVE_PAUSED)
     {
@@ -171,12 +170,12 @@ void AudioCore::StopTrack()
         if (!BASS_ChannelStop(stream))
         {
             qDebug() <<"Возникла ошибка при остановке трека";
-            HandleError(BASS_ErrorGetCode());
+            handleError(BASS_ErrorGetCode());
         }
     }
 }
 
-void AudioCore::PauseTrack()
+void AudioCore::pauseTrack()
 {
     if(BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING)
     {
@@ -184,20 +183,20 @@ void AudioCore::PauseTrack()
         if(!BASS_ChannelPause(stream))
         {
             qDebug() << "Возникла ошибка при установки трека на паузу";
-            HandleError(BASS_ErrorGetCode());
+            handleError(BASS_ErrorGetCode());
         }
     }
 }
 
-void AudioCore::VolumeChange(int value)
+void AudioCore::volumeChange(int value)
 {
     if (!BASS_ChannelSetAttribute(stream,BASS_ATTRIB_VOL,(float)value/100))
     {
         qDebug() << "Возникла ошибка при изменении громкости";
-        HandleError(BASS_ErrorGetCode());
+        handleError(BASS_ErrorGetCode());
     }
 }
-void AudioCore::ChangeDevice(int index)
+void AudioCore::changeDevice(int index)
 {
     qDebug() << "Инициализируем новое устройство";
     if(!BASS_Init(index+1, 44100,0,0, NULL))
@@ -205,7 +204,7 @@ void AudioCore::ChangeDevice(int index)
         if(BASS_ErrorGetCode()!= 14)
         {
             qDebug() << "Ошибка инициализации устройства";
-            HandleError(BASS_ErrorGetCode());
+            handleError(BASS_ErrorGetCode());
         }
     }
 
@@ -213,11 +212,11 @@ void AudioCore::ChangeDevice(int index)
     if (!BASS_ChannelSetDevice(stream,index+1))
     {
         qDebug() << "Изменение устройста неудачно";
-        HandleError(BASS_ErrorGetCode());
+        handleError(BASS_ErrorGetCode());
     }
 }
 
-void AudioCore::ChangeParametrEqalizer(QString name, int value)
+void AudioCore::changeParametrEqalizer(QString name, int value)
 {
     qDebug() << value;
     qDebug() << name;
