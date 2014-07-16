@@ -413,8 +413,8 @@ void MainWindow::info()
         int bitrate = 0;
         int size = 0;
         int freq = 0;
-        QString PathToFile = trackPath.value(trackName.at(index));
-        ReaderTag *reader = ReaderTagCreator::createReaderTag(PathToFile);
+        QString pathToFile = trackPath.value(trackName.at(index));
+        ReaderTag *reader = ReaderTagCreator::createReaderTag(pathToFile);
         TagInfo tags = reader->getTag();
 
         artist = tags.artist;
@@ -422,12 +422,13 @@ void MainWindow::info()
         genre = tags.genre;
         title = tags.title;
         year = tags.year;
+        size = tags.size;
         numTrack = tags.trackNum;
         lenght = tags.length;
         bitrate = tags.beatRate / 1000;
         freq = tags.frequency / 1000;
         typeTrack = tags.trackType;
-        form_info = new Form(this, title, artist, album, genre, year, numTrack, lenght, bitrate, size, freq, typeTrack );
+        form_info = new Form(this, title, artist, album, genre, year, numTrack, lenght, bitrate, size, freq, typeTrack, pathToFile );
         form_info->setWindowFlags(Qt::Window);
         form_info->show();
         connect(form_info, SIGNAL(destroyed()), this, SLOT(clearFormInfo()));

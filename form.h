@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QString>
 
+#define ONE_MEGABYTE 1000000
+
 namespace Ui {
 class Form;
 }
@@ -23,9 +25,10 @@ public:
          QString numTrack,
          int duration,
          int bitrate,
-         int size,
+         quint64 size,
          int freq,
-         QString typeTrack);
+         QString typeTrack,
+         QString pathToFile);
     ~Form();
 
 private:

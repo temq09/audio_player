@@ -17,9 +17,9 @@ Form::Form(QWidget *parent,
            QString numTrack,
            int duration,
            int bitrate,
-           int size,
+           quint64 size,
            int freq,
-           QString typeTrack) :
+           QString typeTrack, QString pathToFile) :
     QWidget(parent),
     ui(new Ui::Form)
 {
@@ -32,8 +32,9 @@ Form::Form(QWidget *parent,
     ui->lb_setNumTrack->setText(numTrack);
     ui->lb_setDuration->setText(QString::number(duration));
     ui->lb_setQuality->setText((QString("%1 kbps; %2 kHz").arg(QString::number(bitrate)).arg(QString::number(freq))));
-    ui->lb_setSize->setText(QString("%1 Mb.").arg(QString::number(size/1000000)));
+    ui->lb_setSize->setText(QString("%1 Мбайт.").arg(QString::number((double)size/ONE_MEGABYTE)));
     ui->lb_setFormat->setText(typeTrack);
+    ui->lb_pathToFile->setText(pathToFile);
 }
 
 Form::~Form()

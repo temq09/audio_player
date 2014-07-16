@@ -41,6 +41,7 @@ TagInfo ReaderID3V2Tag::getTag()
     if(file->seek(offset))
     {
         int lenght = 4;
+        tagInfo.size = file->size();
         QByteArray *array;
         array = readBytesFromFile(indexLenght, lenght + indexLenght);
         int sizeLenghtTags = getLenghtTags(&array->toHex());

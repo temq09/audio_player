@@ -25,7 +25,7 @@ typedef struct TagInfo{
     int length;
     int beatRate;
     int year;    
-    int size;
+    quint64 size;
     int frequency;
 } TagInfo;
 
