@@ -9,7 +9,8 @@ ReaderTag * ReaderTagCreator::createReaderTag(QString pathToFile)
 {
     qDebug() << pathToFile;
     ReaderTag *readerTag = 0;
-    QFile *file = new QFile(pathToFile);
+    QString tmp = QString(pathToFile.unicode());
+    QFile *file = new QFile(tmp);
     if(!file->open(QIODevice::ReadOnly))
         return nullptr;
     QByteArray byteArray;
@@ -17,7 +18,7 @@ ReaderTag * ReaderTagCreator::createReaderTag(QString pathToFile)
     if(byteArray.contains("ID3"))
     {
         //qDebug() << "Трек содержит ID3V2 тэг";
-        readerTag = new ReaderID3V2Tag(pathToFile);
+        readerTag = new ReaderID3V2Tag(tmp);
     }
     else
     {
@@ -31,7 +32,7 @@ ReaderTag * ReaderTagCreator::createReaderTag(QString pathToFile)
         if(byteArray.contains("TAG"))
         {
             //qDebug() << "Трек содержит ID3V1 тег";
-            readerTag = new ReaderID3V1Tag(pathToFile);
+            readerTag = new ReaderID3V1Tag(tmp);
         }
     }
 

@@ -106,12 +106,11 @@ void AudioCore::playTrack(QString path)
     {
         BASS_StreamFree(stream);
     }
-
-    stream = BASS_StreamCreateFile(FALSE,path.toStdString().c_str() , 0,0, BASS_SAMPLE_FX);
+    stream = BASS_StreamCreateFile(FALSE, (WCHAR*)path.utf16(), 0,0, BASS_SAMPLE_FX);
     if(!stream)
     {
         qDebug() << "Ошибка создания потока";
-        qDebug() << path.data();
+        qDebug() << path;
         return ;
     }
     else
