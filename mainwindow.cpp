@@ -122,7 +122,15 @@ void MainWindow::parseFileList(QStringList &file_list)
         if(reader != 0)
         {
             TagInfo tag = reader->getTag();
-
+            //если значение артиска ноль или пустая строка, то добавлять будем по названию файла
+            if(tag.title.isEmpty())
+            {
+                QString tmpStr = (QString)((*constIterator).unicode());
+                int index = tmpStr.lastIndexOf("\\");
+                if (-1 == index)
+                    index = tmpStr.lastIndexOf("/");
+                tag.title = tmpStr.right( tmpStr.length() - index - 1);
+            }
             trackName.append(tag.title);
             trackPath.insert(tag.title, QString((*constIterator).unicode()));
             trackTime.insert(tag.title, tag.length);

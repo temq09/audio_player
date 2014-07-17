@@ -39,14 +39,13 @@ FORMS    += mainwindow.ui \
     form_addradio.ui
 
 #if MSVC 2012
-INCLUDEPATH += "$$PWD\\src\\libtag\\libtag_include\\taglib" \
-    "$$PWD\\src\\bass\\bass_include"
+INCLUDEPATH += "$$PWD\\src\\bass\\bass_include"
 
-LIBS += -L"$$PWD\\src\\libtag\\libtag_lib\\" \
-    -L"$$PWD\\src\\bass\\bass_lib\\"
+LIBS += -L"$$PWD\\src\\bass\\bass_lib\\"
 
-LIBS += -ltag \
-    -lbass
+LIBS += -lbass
 
-#QMAKE_CXXFLAGS += -O2
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
+
+QMAKE_CXXFLAGS += -O2
 

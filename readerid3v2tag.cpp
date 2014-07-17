@@ -183,12 +183,20 @@ QByteArray *ReaderID3V2Tag::readBytesFromFile(int beginIndex, int endIndex)
  * Размер тега находится в 4 байтах после названия тега, после размера идут 2 байта флагов,
  * следовательно информация для тега находится со смещением <4 байта - ид тега> + < 4 байта - значение размера тега> + <2 байта - флаг>
  * Общий размер тега равен 10 байт + размер данных в теге.
- * при выборке данных используется функция QByteArray::mid. При вычислении индекса начал, и длинны происходит корректировка на значение 1.
- * Это сделанно аз-за того, что первым символом является '00'.
+ * при выборке данных используется функция QByteArray::mid. При вычислении индекса начала и длинны происходит корректировка на 1.
+ * Это сделанно из-за того, что первым символом является '00'.
+ * Для получения окончательного результата производится перебор каждого символа в массиве,
+ * для того чтобы убрать символы, которые не отображаются на экране
  */
 QString ReaderID3V2Tag::getInfo(QString tag, QByteArray *data)
 {
+
     int index = data->indexOf(tag);
+    if (-1 == index)
+    {
+        qDebug() << tag << " not found";
+        return QString();
+    }
     QByteArray tagsData = data->mid(index + tag.size(), 4);
     if(tagsData.isEmpty())
     {
@@ -196,7 +204,6 @@ QString ReaderID3V2Tag::getInfo(QString tag, QByteArray *data)
         return QString();
     }
     int sizeTag = tagsData.toHex().toInt(0, 16);
-    //qDebug() << sizeTag;
     tagsData.clear();
     tagsData = data->mid(index + 10 + 1, sizeTag - 1 );
     if(tagsData.isEmpty())
@@ -204,7 +211,16 @@ QString ReaderID3V2Tag::getInfo(QString tag, QByteArray *data)
         qDebug() << "Error while parse " << tag;
         return QString();
     }
-    QString result = tagsData;
+    QString result;
+    for(int i = 0; i < tagsData.length(); i++)
+    {
+        QChar symbol(tagsData.at(i));
+        if( (symbol.unicode() >=32 && symbol.unicode() <= 126)
+                || (symbol.unicode() >= 1040 && symbol.unicode() <=1163))
+            result.append(symbol);
+    }
+    result.append("\0");
+    //QString result = tagsData;
     qDebug() << result ;
     return result;
 }
