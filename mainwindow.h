@@ -2,24 +2,16 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFile>
-#include <QDebug>
 #include <QDir>
 #include <QFileDialog>
 #include <QStringListModel>
+#include <QItemSelectionModel>
+#include <QAction>
+#include <readertag.h>
+
 #include "modernslider.h"
 #include "audiocore.h"
 #include "parseplaylist.h"
-#include <QList>
-#include <QMultiMap>
-#include <QItemSelectionModel>
-#include <QAction>
-#include <QElapsedTimer>
-#include <taglib.h>
-#include <id3v1tag.h>
-#include <id3v2tag.h>
-#include <mpegfile.h>
-#include <readertag.h>
 #include "form.h"
 #include "form_addradio.h"
 #include "readertagcreator.h"

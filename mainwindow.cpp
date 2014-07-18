@@ -122,10 +122,19 @@ void MainWindow::parseFileList(QStringList &file_list)
         if(reader != 0)
         {
             TagInfo tag = reader->getTag();
-
-            trackName.append(tag.title);
-            trackPath.insert(tag.title, QString((*constIterator).unicode()));
-            trackTime.insert(tag.title, tag.length);
+            //если значение артиста ноль или пустая строка, то добавлять будем по названию файла
+            if(tag.title.isEmpty())
+            {
+                QString tmpStr = (QString)((*constIterator).unicode());
+                int index = tmpStr.lastIndexOf("\\");
+                if (-1 == index)
+                    index = tmpStr.lastIndexOf("/");
+                tag.title = tmpStr.right( tmpStr.length() - index - 1);
+            }
+            QString title = QString("%1 - %2").arg(tag.artist).arg(tag.title);
+            trackName.append(title);
+            trackPath.insert(title, QString((*constIterator).unicode()));
+            trackTime.insert(title, tag.length);
         }
     }
     qDebug() << timer.nsecsElapsed();
@@ -380,15 +389,18 @@ void MainWindow::savePlayList()
 
 void MainWindow::deleteFailFromPlayList()
 {
-    int index = -1;
-    index = main_form->listView->currentIndex().row();
-    if(index != -1)
-    {
-        trackPath.remove(trackName.at(index));
-        trackTime.remove(trackName.at(index));
-        trackName.removeAt(index);
-        refreshList();
+    /*int index = -1;
+    index = main_form->listView->currentIndex().row();*/
+    QModelIndexList indexLists = main_form->listView->selectionModel()->selectedRows();
+    int count = 0;
+    foreach (QModelIndex index, indexLists) {
+        QString str = trackName.at(index.row() - count);
+        trackPath.remove(str);
+        trackTime.remove(str);
+        trackName.removeAt(index.row() - count);
+        count++;
     }
+    refreshList();
 }
 
 void MainWindow::deleteFailFromDisk()
@@ -439,7 +451,6 @@ void MainWindow::info()
 void MainWindow::clearFormInfo()
 {
     delete form_info;
-    disconnect(form_info, SIGNAL(destroyed()), this, SLOT(clearFormInfo()));
 }
 
 void MainWindow::mute(bool state)

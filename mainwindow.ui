@@ -1129,7 +1129,11 @@
        </layout>
       </item>
       <item>
-       <widget class="QListView" name="listView"/>
+       <widget class="QListView" name="listView">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

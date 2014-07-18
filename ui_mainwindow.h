@@ -848,6 +848,7 @@ public:
 
         listView = new QListView(centralWidget);
         listView->setObjectName(QStringLiteral("listView"));
+        listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
         verticalLayout->addWidget(listView);
 

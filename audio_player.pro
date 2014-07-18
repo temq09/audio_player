@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     readertag.cpp \
     readerid3v1tag.cpp \
     readerid3v2tag.cpp \
-    readertagcreator.cpp
+    readertagcreator.cpp \
+    playlistitem.cpp
 
 HEADERS  += mainwindow.h \
     audiocore.h \
@@ -32,21 +33,22 @@ HEADERS  += mainwindow.h \
     readertag.h \
     readerid3v1tag.h \
     readerid3v2tag.h \
-    readertagcreator.h
+    readertagcreator.h \
+    playlistitem.h
 
 FORMS    += mainwindow.ui \
     form.ui \
-    form_addradio.ui
+    form_addradio.ui \
+    playlistitem.ui
 
 #if MSVC 2012
-INCLUDEPATH += "$$PWD\\src\\libtag\\libtag_include\\taglib" \
-    "$$PWD\\src\\bass\\bass_include"
+INCLUDEPATH += "$$PWD\\src\\bass\\bass_include"
 
-LIBS += -L"$$PWD\\src\\libtag\\libtag_lib\\" \
-    -L"$$PWD\\src\\bass\\bass_lib\\"
+LIBS += -L"$$PWD\\src\\bass\\bass_lib\\"
 
-LIBS += -ltag \
-    -lbass
+LIBS += -lbass
+
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
 #QMAKE_CXXFLAGS += -O2
 
