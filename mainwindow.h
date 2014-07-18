@@ -8,6 +8,8 @@
 #include <QItemSelectionModel>
 #include <QAction>
 #include <readertag.h>
+#include <QListWidgetItem>
+#include <QListWidget>
 
 #include "modernslider.h"
 #include "audiocore.h"
@@ -15,6 +17,7 @@
 #include "form.h"
 #include "form_addradio.h"
 #include "readertagcreator.h"
+#include "playlistitem.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,6 +41,7 @@ private:
     QList<QString> trackName;
     QMultiMap<QString, QString> trackPath;
     QMultiMap<QString, int> trackTime;
+    QList<PlayListItem*> playList;
     int currentPlayTrack;
     int channel_count;
     QAction *act_Info;

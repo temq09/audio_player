@@ -18,7 +18,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QListView>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
@@ -134,7 +134,7 @@ public:
     QPushButton *btn_OpenPlayList;
     QPushButton *btn_AddRadio;
     QPushButton *btn_OpenFile;
-    QListView *listView;
+    QListWidget *lw_playlist;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -846,11 +846,11 @@ public:
 
         verticalLayout->addLayout(horizontalLayout);
 
-        listView = new QListView(centralWidget);
-        listView->setObjectName(QStringLiteral("listView"));
-        listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        lw_playlist = new QListWidget(centralWidget);
+        lw_playlist->setObjectName(QStringLiteral("lw_playlist"));
+        lw_playlist->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-        verticalLayout->addWidget(listView);
+        verticalLayout->addWidget(lw_playlist);
 
 
         verticalLayout_2->addLayout(verticalLayout);
