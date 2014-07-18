@@ -51,7 +51,6 @@ private:
     Form *form_info;
     form_addRadio *form_Radio;
 
-    void refreshList();
     void startPlay(QString path);
     void startPlayRadio(QString path);
     void choosePlay(int index);
@@ -62,7 +61,7 @@ private:
 
 private slots:
     void openFile();
-    void getSelectedIndex(QModelIndex index);
+    //void getSelectedIndex(QModelIndex index);
     void play();
     void stop();
     void pause();

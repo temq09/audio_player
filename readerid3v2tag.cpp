@@ -40,6 +40,7 @@ TagInfo ReaderID3V2Tag::getTag()
     int offset = indexLenght;
     if(file->seek(offset))
     {
+        tagInfo.pathToFile = getPathToFile();
         int lenght = 4;
         tagInfo.size = file->size();
         QByteArray *array;

@@ -22,6 +22,7 @@ typedef struct TagInfo{
     QString trackNum;
     QString trackType;
     QString channel;
+    QString pathToFile;
     int length;
     int beatRate;
     int year;    
