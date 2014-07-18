@@ -38,9 +38,6 @@ private:
     QItemSelectionModel *selectmodel;
     int currentVolume;
     AudioCore *core;
-    QList<QString> trackName;
-    QMultiMap<QString, QString> trackPath;
-    QMultiMap<QString, int> trackTime;
     QList<PlayListItem*> playList;
     int currentPlayTrack;
     int channel_count;
@@ -49,7 +46,6 @@ private:
     QAction *act_deleteFailFromDisk;
     modernSlider *mySlider;
     Form *form_info;
-    form_addRadio *form_Radio;
 
     void startPlay(QString path);
     void startPlayRadio(QString path);
@@ -57,6 +53,7 @@ private:
     void parseFileList(QStringList &file_list);
     void initializeEqalizerScrollBar();
     void changeFocusToNextTrack(int row);
+    void addItemToPlayList(TagInfo tag);
     //void ConnectedSlyderSignalsAndSlots();
 
 private slots:
@@ -77,7 +74,6 @@ private slots:
     void clearFormInfo();
     void addRadio();
     void addRadioToPlayList(QString url, QString nameRadio);
-    void clearFormAddRadio();
 
 public slots:
     //void handleSliderMoved(QString objectName);

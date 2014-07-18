@@ -50,5 +50,5 @@ LIBS += -lbass
 
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
-QMAKE_CXXFLAGS += -O2
+CONFIG(release, debug|release):QMAKE_CXXFLAGS += -O2
 
