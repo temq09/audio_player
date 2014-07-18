@@ -49,6 +49,11 @@ public:
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
         lb_trackName = new QLabel(PlayListItem);
         lb_trackName->setObjectName(QStringLiteral("lb_trackName"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(1);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(lb_trackName->sizePolicy().hasHeightForWidth());
+        lb_trackName->setSizePolicy(sizePolicy);
         QFont font;
         font.setPointSize(10);
         font.setBold(true);
@@ -59,11 +64,11 @@ public:
 
         lb_lenght = new QLabel(PlayListItem);
         lb_lenght->setObjectName(QStringLiteral("lb_lenght"));
-        QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(lb_lenght->sizePolicy().hasHeightForWidth());
-        lb_lenght->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(lb_lenght->sizePolicy().hasHeightForWidth());
+        lb_lenght->setSizePolicy(sizePolicy1);
         QFont font1;
         font1.setPointSize(10);
         lb_lenght->setFont(font1);
@@ -77,8 +82,8 @@ public:
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         lb_type = new QLabel(PlayListItem);
         lb_type->setObjectName(QStringLiteral("lb_type"));
-        sizePolicy.setHeightForWidth(lb_type->sizePolicy().hasHeightForWidth());
-        lb_type->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(lb_type->sizePolicy().hasHeightForWidth());
+        lb_type->setSizePolicy(sizePolicy1);
         lb_type->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         lb_type->setMargin(3);
 
@@ -86,24 +91,24 @@ public:
 
         lb_beatrate = new QLabel(PlayListItem);
         lb_beatrate->setObjectName(QStringLiteral("lb_beatrate"));
-        sizePolicy.setHeightForWidth(lb_beatrate->sizePolicy().hasHeightForWidth());
-        lb_beatrate->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(lb_beatrate->sizePolicy().hasHeightForWidth());
+        lb_beatrate->setSizePolicy(sizePolicy1);
         lb_beatrate->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         horizontalLayout_2->addWidget(lb_beatrate);
 
         lb_freq = new QLabel(PlayListItem);
         lb_freq->setObjectName(QStringLiteral("lb_freq"));
-        sizePolicy.setHeightForWidth(lb_freq->sizePolicy().hasHeightForWidth());
-        lb_freq->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(lb_freq->sizePolicy().hasHeightForWidth());
+        lb_freq->setSizePolicy(sizePolicy1);
         lb_freq->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         horizontalLayout_2->addWidget(lb_freq);
 
         lb_size = new QLabel(PlayListItem);
         lb_size->setObjectName(QStringLiteral("lb_size"));
-        sizePolicy.setHeightForWidth(lb_size->sizePolicy().hasHeightForWidth());
-        lb_size->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(lb_size->sizePolicy().hasHeightForWidth());
+        lb_size->setSizePolicy(sizePolicy1);
         lb_size->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         horizontalLayout_2->addWidget(lb_size);
