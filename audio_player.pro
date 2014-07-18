@@ -13,9 +13,42 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    audioplayer_core.cpp
+    audiocore.cpp \
+    parseplaylist.cpp \
+    modernslider.cpp \
+    form.cpp \
+    form_addradio.cpp \
+    readertag.cpp \
+    readerid3v1tag.cpp \
+    readerid3v2tag.cpp \
+    readertagcreator.cpp \
+    playlistitem.cpp
 
 HEADERS  += mainwindow.h \
-    audioplayer_core.h
+    audiocore.h \
+    parseplaylist.h \
+    modernslider.h \
+    form.h \
+    form_addradio.h \
+    readertag.h \
+    readerid3v1tag.h \
+    readerid3v2tag.h \
+    readertagcreator.h \
+    playlistitem.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    form.ui \
+    form_addradio.ui \
+    playlistitem.ui
+
+#if MSVC 2012
+INCLUDEPATH += "$$PWD\\src\\bass\\bass_include"
+
+LIBS += -L"$$PWD\\src\\bass\\bass_lib\\"
+
+LIBS += -lbass
+
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
+
+#QMAKE_CXXFLAGS += -O2
+

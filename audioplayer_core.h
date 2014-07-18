@@ -12,7 +12,7 @@ class AudioPlayer_core : public QObject
 {
     Q_OBJECT
 public:
-    explicit AudioPlayer_core(QObject *parent = 0, int volume = 50);
+    AudioPlayer_core(QObject *parent = 0, int volume = 50);
     ~AudioPlayer_core();
     void PlayTrack(QString path);
     void StopTrack();
