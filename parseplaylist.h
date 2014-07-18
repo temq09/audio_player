@@ -20,8 +20,10 @@ public:
     QList<QString> GetTrackName();
     QMultiMap<QString, QString> GetTrackPath();
     QMultiMap<QString, int> GetTrackTime();
+    QStringList getPathToTrack();
 
 private:
+    QStringList pathToTrack;
     QList<QString> listTrackName;
     QMultiMap<QString, QString> listTrackPath;
     QMultiMap<QString, int> listTrackTime;
@@ -30,6 +32,7 @@ private:
     void readTime(int *index, QByteArray &arr);
     void readName(int *index, QByteArray &arr, int trackLenght); //trackLenght нужен ждя занесения в карту длинны соответствующей данному треку
     void readPath(int *index, QByteArray &arr, QString trackName);//trackName нужен для занаесения в карту пути до данного трека
+
     void checkInfo(QString str, int *index, QByteArray &arr);
 };
 

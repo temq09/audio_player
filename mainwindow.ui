@@ -1129,7 +1129,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QListView" name="listView">
+       <widget class="QListWidget" name="lw_playlist">
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>

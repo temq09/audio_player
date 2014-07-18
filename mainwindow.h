@@ -8,6 +8,8 @@
 #include <QItemSelectionModel>
 #include <QAction>
 #include <readertag.h>
+#include <QListWidgetItem>
+#include <QListWidget>
 
 #include "modernslider.h"
 #include "audiocore.h"
@@ -15,6 +17,7 @@
 #include "form.h"
 #include "form_addradio.h"
 #include "readertagcreator.h"
+#include "playlistitem.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,9 +38,7 @@ private:
     QItemSelectionModel *selectmodel;
     int currentVolume;
     AudioCore *core;
-    QList<QString> trackName;
-    QMultiMap<QString, QString> trackPath;
-    QMultiMap<QString, int> trackTime;
+    QList<PlayListItem*> playList;
     int currentPlayTrack;
     int channel_count;
     QAction *act_Info;
@@ -45,20 +46,19 @@ private:
     QAction *act_deleteFailFromDisk;
     modernSlider *mySlider;
     Form *form_info;
-    form_addRadio *form_Radio;
 
-    void refreshList();
     void startPlay(QString path);
     void startPlayRadio(QString path);
     void choosePlay(int index);
     void parseFileList(QStringList &file_list);
     void initializeEqalizerScrollBar();
     void changeFocusToNextTrack(int row);
+    void addItemToPlayList(TagInfo tag);
     //void ConnectedSlyderSignalsAndSlots();
 
 private slots:
     void openFile();
-    void getSelectedIndex(QModelIndex index);
+    //void getSelectedIndex(QModelIndex index);
     void play();
     void stop();
     void pause();
@@ -74,7 +74,6 @@ private slots:
     void clearFormInfo();
     void addRadio();
     void addRadioToPlayList(QString url, QString nameRadio);
-    void clearFormAddRadio();
 
 public slots:
     //void handleSliderMoved(QString objectName);
