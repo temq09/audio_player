@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     readertag.cpp \
     readerid3v1tag.cpp \
     readerid3v2tag.cpp \
-    readertagcreator.cpp
+    readertagcreator.cpp \
+    playlistitem.cpp
 
 HEADERS  += mainwindow.h \
     audiocore.h \
@@ -32,11 +33,13 @@ HEADERS  += mainwindow.h \
     readertag.h \
     readerid3v1tag.h \
     readerid3v2tag.h \
-    readertagcreator.h
+    readertagcreator.h \
+    playlistitem.h
 
 FORMS    += mainwindow.ui \
     form.ui \
-    form_addradio.ui
+    form_addradio.ui \
+    playlistitem.ui
 
 #if MSVC 2012
 INCLUDEPATH += "$$PWD\\src\\bass\\bass_include"
