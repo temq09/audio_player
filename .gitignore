@@ -38,6 +38,8 @@ src/
 cache/
 [Mm]akefile
 tmp/*
+*.orig
+*.m3u
 audio_player.pro.user
 audio_player.pro.user.15
 audio_player.pro.user.3.0-pre1

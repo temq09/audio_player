@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
      * connect block
      */
     //ConnectedSlyderSignalsAndSlots();
-    connect(main_form->btn_OpenFile, SIGNAL(clicked()), this, SLOT(openFile()));
+
     //connect(main_form->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(getSelectedIndex(QModelIndex)));
     connect(main_form->btn_Play, SIGNAL(clicked()), this, SLOT(play()));
     connect(main_form->btn_Pause, SIGNAL(clicked()), this, SLOT(pause()));
@@ -43,14 +43,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(main_form->btn_Previous, SIGNAL(clicked()), this, SLOT(previous()));
     connect(main_form->sb_volume, SIGNAL(valueChanged(int)), core, SLOT(volumeChange(int)));
     connect(main_form->sb_volume, SIGNAL(valueChanged(int)), this, SLOT(checkMute()));
-    connect(core, SIGNAL(switchTrack()), this, SLOT(next()));
-    connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(changeDevice(int)));
-    connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(openPlayList()));
-    connect(core, SIGNAL(switchTrack()), this, SLOT(next()));
-    connect(main_form->btn_SavePlayList, SIGNAL(clicked()), this, SLOT(savePlayList()));
-    connect(this, SIGNAL(sliderChangeWithName(QString,int)), core, SLOT(changeParametrEqalizer(QString,int)));
-    connect(main_form->cBox_Mute, SIGNAL(toggled(bool)), this, SLOT(mute(bool)));
     connect(main_form->btn_AddRadio, SIGNAL(clicked()), this, SLOT(addRadio()));
+    connect(main_form->cb_device, SIGNAL(activated(int)), core, SLOT(changeDevice(int)));
+    connect(main_form->cBox_Mute, SIGNAL(toggled(bool)), this, SLOT(mute(bool)));
+
+    connect(main_form->btn_OpenFile, SIGNAL(clicked()), this, SLOT(openFileDialog()));
+    connect(main_form->btn_OpenPlayList, SIGNAL(clicked()), this, SLOT(openPlayListDialog()));
+    connect(main_form->btn_SavePlayList, SIGNAL(clicked()), this, SLOT(savePlayListDialog()));
+
+    connect(core, SIGNAL(switchTrack()), this, SLOT(next()));
+
+    connect(this, SIGNAL(sliderChangeWithName(QString,int)), core, SLOT(changeParametrEqalizer(QString,int)));
     //connect(main_form->slider_87, SIGNAL, core, SLOT(ChangeParametrEqalizer(int)));
     main_form->lw_playlist->setContextMenuPolicy(Qt::ActionsContextMenu);
     act_Info = new QAction("Информация о файле", main_form->lw_playlist);
@@ -64,6 +67,12 @@ MainWindow::MainWindow(QWidget *parent) :
     main_form->lw_playlist->addAction(act_Info);
     main_form->lw_playlist->addAction(act_deleteFailFromPlayList);
     main_form->lw_playlist->addAction(act_deleteFailFromDisk);
+
+    QFile file(NAME_DEFAULT_PLAYLIST);
+    if(file.exists())
+        openPlayList(NAME_DEFAULT_PLAYLIST);
+    else
+        qDebug() << "default playlist not found";
 }
 
 /*void MainWindow::ConnectedSlyderSignalsAndSlots()
@@ -100,26 +109,76 @@ MainWindow::~MainWindow()
     delete core;
 }
 
-void MainWindow::openFile()
+void MainWindow::openFileDialog()
 {
-    QStringList file_list = QFileDialog::getOpenFileNames(this,
-                                                          "Открыть файлы",
-                                                          "D:\\",
-                                                          "Audio (*.mp3 *.raw *.waw);;All files (*.*)");
-
-    qDebug() << "Парсим";
-    parseFileList(file_list);
-    qDebug() << "Обновляем";
+    createFileDialog(TypeFileDialog::OPEN_FILE);
 }
 
-void MainWindow::parseFileList(QStringList &file_list)
+void MainWindow::openPlayListDialog()
+{
+    createFileDialog(TypeFileDialog::OPEN_PLAY_LIST);
+}
+
+void MainWindow::savePlayListDialog()
+{
+    createFileDialog(TypeFileDialog::SAVE_PLAY_LIST);
+}
+
+void MainWindow::createFileDialog(MainWindow::TypeFileDialog type)
+{
+    QString filename;
+    QStringList file_list;
+    switch(type)
+    {
+    case TypeFileDialog::OPEN_PLAY_LIST :
+        filename = QFileDialog::getOpenFileName(this,
+                                                "Открыть плейлист",
+                                                "D:\\",
+                                                "playlist (*.m3u)");
+        openPlayList(filename);
+        break;
+    case TypeFileDialog::OPEN_FILE:
+        file_list = QFileDialog::getOpenFileNames(this,
+                                                              "Открыть файлы",
+                                                              "D:\\",
+                                                              "Audio (*.mp3 *.raw *.waw);;All files (*.*)");
+        openFileList(file_list);
+        break;
+    case TypeFileDialog::SAVE_PLAY_LIST:
+        filename = QFileDialog::getSaveFileName(this,
+                                                        tr("Save Playlist"),
+                                                        QDir::currentPath(),
+                                                        tr("PlayList (*.m3u)"));
+        savePlayList(filename);
+        break;
+    default:
+        qDebug() << "nothing";
+
+    }
+}
+
+void MainWindow::openPlayList(const QString &filename)
+{
+    if(filename.isEmpty())
+        return;
+    ParsePlayList* parsePlaylist = new ParsePlayList;
+
+    QStringList playStringList;
+    if(parsePlaylist->StartParse(filename))
+        playStringList = parsePlaylist->getPathToTrack();
+    openFileList(playStringList);
+
+    delete parsePlaylist;
+}
+
+void MainWindow::openFileList(const QStringList &file_list)
 {
     QStringList::const_iterator constIterator;
-    QElapsedTimer timer;
-    timer.start();
     for ( constIterator = file_list.constBegin(); constIterator != file_list.constEnd(); constIterator++)
     {
         //qDebug() << "открываем новый файл";
+        //QElapsedTimer timer2;
+        //timer2.start();
         QString tmp = (*constIterator).left(8);
         if(tmp.contains("http://"))
         {
@@ -149,7 +208,30 @@ void MainWindow::parseFileList(QStringList &file_list)
             delete reader;
         }
     }
-    qDebug() << timer.nsecsElapsed();
+}
+
+void MainWindow::savePlayList(const QString &filename)
+{
+    const QString title = "#EXTM3U";
+    const QString body = "#EXTINF";
+    qDebug() << filename;
+
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Файл не открыт.";
+    }
+    else
+    {
+        QTextStream out(&file);
+        out.setCodec("UTF-8");
+        out << title << "\n";
+        foreach (PlayListItem *tag, playList)
+        {
+            out << body << ":" << tag->getTags().length << "," << QString("%1 - %2").arg(tag->getTags().artist).arg(tag->getTags().title)
+                   << "\n" << tag->getTags().pathToFile << "\n";
+        }
+    }
 }
 
 void MainWindow::addRadio()
@@ -176,7 +258,7 @@ void MainWindow::addRadioToPlayList(QString url, QString nameRadio)
     addItemToPlayList(tagRadio);
 }
 
-void MainWindow::addItemToPlayList(TagInfo tag)
+void MainWindow::addItemToPlayList(const TagInfo &tag)
 {
     PlayListItem *item = new PlayListItem(this, tag);
     playList.append(item);
@@ -186,30 +268,12 @@ void MainWindow::addItemToPlayList(TagInfo tag)
     main_form->lw_playlist->setItemWidget(it, item);
 }
 
-void MainWindow::openPlayList()
-{
-    QString playList = QFileDialog::getOpenFileName(this,
-                                                        "Открыть плейлист",
-                                                        "D:\\",
-                                                        "playlist (*.m3u)");
-    if(playList.isEmpty())
-        return;
-    ParsePlayList* parsePlaylist = new ParsePlayList;
-
-    QStringList playStringList;
-    if(parsePlaylist->StartParse(playList))
-        playStringList = parsePlaylist->getPathToTrack();
-    parseFileList(playStringList);
-
-    delete parsePlaylist;
-}
-
-void MainWindow::startPlay(QString path)
+void MainWindow::startPlay(const QString &path)
 {
     core->playTrack(path);
 }
 
-void MainWindow::startPlayRadio(QString path)
+void MainWindow::startPlayRadio(const QString &path)
 {
     core->playRadio(path);
 }
@@ -228,7 +292,7 @@ void MainWindow::pause()
 {
     if(playList.isEmpty())
     {
-        qDebug() << "Плей лист пустой, него ставить на паузу";
+        qDebug() << "Плей лист пустой, нечего ставить на паузу";
         return;
     }
     if(playList.at(currentPlayTrack)->getTags().length == -1)
@@ -307,35 +371,6 @@ void MainWindow::choosePlay(int index)
 void MainWindow::changeFocusToNextTrack(int row)
 {
     main_form->lw_playlist->selectionModel()->select(model.index(row, 0), QItemSelectionModel::ClearAndSelect);
-}
-
-void MainWindow::savePlayList()
-{
-    const QString title = "#EXTM3U";
-    const QString body = "#EXTINF";
-
-    QString filename = QFileDialog::getSaveFileName(this,
-                                                    tr("Save Playlist"),
-                                                    QDir::currentPath(),
-                                                    tr("PlayList (*.m3u)"));
-    qDebug() << filename;
-
-    QFile file(filename);
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        qDebug() << "Файл не открыт.";
-    }
-    else
-    {
-        QTextStream out(&file);
-        out.setCodec("UTF8");
-        out << title << "\n";
-        foreach (PlayListItem *tag, playList)
-        {
-            out << body << ":" << tag->getTags().length << "," << QString("%1 - %2").arg(tag->getTags().artist).arg(tag->getTags().title)
-                   << "\n" << tag->getTags().pathToFile << "\n";
-        }
-    }
 }
 
 /*void MainWindow::handleSliderMoved(QString objectName)
@@ -493,4 +528,14 @@ void MainWindow::checkMute()
     {
         main_form->cBox_Mute->setCheckState(Qt::Unchecked);
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    qDebug() << "save dafault playlist";
+    QFile file(NAME_DEFAULT_PLAYLIST);
+    if(file.exists())
+        file.remove();
+    savePlayList(NAME_DEFAULT_PLAYLIST);
+    event->accept();
 }

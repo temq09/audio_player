@@ -5,7 +5,7 @@ ReaderTagCreator::ReaderTagCreator()
 
 }
 
-ReaderTag * ReaderTagCreator::createReaderTag(QString pathToFile)
+ReaderTag * ReaderTagCreator::createReaderTag(const QString &pathToFile)
 {
     qDebug() << pathToFile;
     ReaderTag *readerTag = 0;
@@ -34,6 +34,8 @@ ReaderTag * ReaderTagCreator::createReaderTag(QString pathToFile)
             //qDebug() << "Трек содержит ID3V1 тег";
             readerTag = new ReaderID3V1Tag(tmp);
         }
+        else
+            readerTag = new ReaderID3V2Tag(tmp); // попытка прочитать информацию из фреймов, при отсутствие тегов.
     }
 
     file->close();

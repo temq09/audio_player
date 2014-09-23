@@ -10,6 +10,7 @@
 #include <readertag.h>
 #include <QListWidgetItem>
 #include <QListWidget>
+#include <QCloseEvent>
 
 #include "modernslider.h"
 #include "audiocore.h"
@@ -31,7 +32,18 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private:
+    QString NAME_DEFAULT_PLAYLIST = "default.m3u";
+    enum TypeFileDialog
+    {
+        OPEN_PLAY_LIST,
+        SAVE_PLAY_LIST,
+        OPEN_FILE
+    };
+
     Ui::MainWindow *main_form;
     QStringList play_list;
     QStringListModel model;
@@ -47,25 +59,28 @@ private:
     modernSlider *mySlider;
     Form *form_info;
 
-    void startPlay(QString path);
-    void startPlayRadio(QString path);
+    void startPlay(const QString &path);
+    void startPlayRadio(const QString &path);
     void choosePlay(int index);
-    void parseFileList(QStringList &file_list);
+    void openFileList(const QStringList &file_list);
     void initializeEqalizerScrollBar();
     void changeFocusToNextTrack(int row);
-    void addItemToPlayList(TagInfo tag);
+    void addItemToPlayList(const TagInfo &tag);
+    void savePlayList(const QString &filename);
+    void openPlayList(const QString &filename);
     //void ConnectedSlyderSignalsAndSlots();
 
 private slots:
-    void openFile();
+    void openFileDialog();
+    void openPlayListDialog();
+    void savePlayListDialog();
+    void createFileDialog(TypeFileDialog type);
     //void getSelectedIndex(QModelIndex index);
     void play();
     void stop();
     void pause();
     void next();
     void previous();
-    void openPlayList();
-    void savePlayList();
     void info();
     void deleteFailFromDisk();
     void deleteFailFromPlayList();

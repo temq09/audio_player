@@ -7,7 +7,7 @@ class ReaderTagCreator
 {
 public:
     ReaderTagCreator();
-    static ReaderTag *createReaderTag(QString pathToFile);
+    static ReaderTag *createReaderTag(const QString &pathToFile);
 };
 
 #endif // READERTAGCREATOR_H

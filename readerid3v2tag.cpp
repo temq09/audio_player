@@ -195,13 +195,13 @@ QString ReaderID3V2Tag::getInfo(QString tag, QByteArray *data)
     int index = data->indexOf(tag);
     if (-1 == index)
     {
-        qDebug() << tag << " not found";
+        //qDebug() << tag << " not found";
         return QString();
     }
     QByteArray tagsData = data->mid(index + tag.size(), 4);
     if(tagsData.isEmpty())
     {
-        qDebug() << "Error while parse " << tag;
+        //qDebug() << "Error while parse " << tag;
         return QString();
     }
     int sizeTag = tagsData.toHex().toInt(0, 16);
@@ -209,7 +209,7 @@ QString ReaderID3V2Tag::getInfo(QString tag, QByteArray *data)
     tagsData = data->mid(index + 10 + 1, sizeTag - 1 );
     if(tagsData.isEmpty())
     {
-        qDebug() << "Error while parse " << tag;
+        //qDebug() << "Error while parse " << tag;
         return QString();
     }
     QString result;
@@ -222,7 +222,7 @@ QString ReaderID3V2Tag::getInfo(QString tag, QByteArray *data)
     }
     result.append("\0");
     //QString result = tagsData;
-    qDebug() << result ;
+    //qDebug() << result ;
     return result;
 }
 
@@ -239,7 +239,7 @@ QString ReaderID3V2Tag::getTypeTrack(QByteArray *data)
 {
     if (data->isEmpty())
     {
-        qDebug() << "error while reading frame";
+        //qDebug() << "error while reading frame";
         return QString();
     }
 
@@ -247,7 +247,7 @@ QString ReaderID3V2Tag::getTypeTrack(QByteArray *data)
     QString tmpStr = binaryNumber.left(11);
     if(tmpStr.contains("0"))
     {
-        qDebug() << "Error reading frame, incorrect marker.";
+        //qDebug() << "Error reading frame, incorrect marker.";
         return QString();
     }
     tmpStr.clear();
@@ -257,7 +257,7 @@ QString ReaderID3V2Tag::getTypeTrack(QByteArray *data)
         type = MPEG_2_5;
         break;
     case 01:
-        qDebug() << "этот тип не используется";
+        //qDebug() << "этот тип не используется";
         break;
     case 10:
         type = MPEG_2;
@@ -266,7 +266,7 @@ QString ReaderID3V2Tag::getTypeTrack(QByteArray *data)
         type = MPEG_1;
         break;
     default:
-        qDebug() << "Error while detect type track";
+        //qDebug() << "Error while detect type track";
         return QString();
     }
 
@@ -283,14 +283,14 @@ QString ReaderID3V2Tag::getTypeTrack(QByteArray *data)
         layer = LAYER3;
         break;
     default:
-        qDebug() << "Error while detect layer track";
+        //qDebug() << "Error while detect layer track";
         return QString();
     }
     QString tmp;
 
     if(type == MPEG_1 && layer == LAYER3)
     {
-        qDebug() << "track type is mp3";
+        //qDebug() << "track type is mp3";
         tmp = "mp3";
     }
     return QString("mp3");
@@ -594,7 +594,7 @@ QString ReaderID3V2Tag::getChannel(QByteArray *data)
     QString channelStr;
     if(tmpStr.isEmpty())
     {
-        qDebug() << "Channel value error";
+        //qDebug() << "Channel value error";
         return QString();
     }
     switch (tmpStr.toInt()) {
